@@ -165,6 +165,7 @@
                     >
 
                     <TextView
+                        android:id="@+id/resumeDate"
                         android:layout_width="54dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"

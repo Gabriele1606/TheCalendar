@@ -6,6 +6,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by Gabri on 17/04/19.
@@ -18,12 +22,29 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        System.out.println("PARTITO");
         View view= inflater.inflate(R.layout.reservation_fragment, container, false);
+
+        //Retrieve data from Bundle
+        Bundle bundle=getArguments();
+        fillLayoutInformation(bundle, view);
 
 
         return view;
     }
 
+
+    public void fillLayoutInformation(Bundle bundle, View view){
+        Calendar data=(Calendar) bundle.getSerializable("DATE");
+        int hour=(int)bundle.getInt("HOUR");
+
+        //ToDo also with Caregiver Photo, Name, Patient Name, RoomNumber;
+
+        TextView resumeDate=(TextView)view.findViewById(R.id.resumeDate);
+
+        resumeDate.setText(data.get(Calendar.DAY_OF_MONTH)+" "+data.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH)+" "+ data.get(Calendar.YEAR)+" "+hour+":00");
+
+
+
+    }
 
 }
