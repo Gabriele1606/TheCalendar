@@ -28,7 +28,6 @@ public class MainPage extends AppCompatActivity {
     final Context mContex=this;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

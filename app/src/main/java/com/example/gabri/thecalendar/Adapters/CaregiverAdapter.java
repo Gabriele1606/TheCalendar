@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.R;
 
@@ -55,12 +56,13 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
 
     @Override
     public void onBindViewHolder(CaregiverHolder holder, int position) {
-        String careGiverTitle=caregivers.get(position).getName().getTitle();
-        String careGiverFirst=caregivers.get(position).getName().getFirst();
-        String careGiverLast=caregivers.get(position).getName().getLast();
+        String caregiverTitle=caregivers.get(position).getName().getTitle();
+        String caregiverFirst=caregivers.get(position).getName().getFirst();
+        String caregiverLast=caregivers.get(position).getName().getLast();
+        String caregiverImage=caregivers.get(position).getPicture().getMedium();
 
-        holder.caregiverName.setText(careGiverTitle+" "+careGiverFirst+" "+careGiverLast);
-        //set images
+        holder.caregiverName.setText(caregiverTitle+" "+caregiverFirst+" "+caregiverLast);
+        Glide.with(mContext).load(caregiverImage).into(holder.caregiverImage);
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Caregiver {
 
+
     @SerializedName("gender")
     @Expose
     private String gender;
@@ -24,6 +25,9 @@ public class Caregiver {
     @SerializedName("email")
     @Expose
     private String email;
+    @SerializedName("login")
+    @Expose
+    private Login login;
     @SerializedName("phone")
     @Expose
     private String phone;
@@ -35,8 +39,7 @@ public class Caregiver {
     @Expose
     private Picture picture;
 
-
-    public Caregiver(String gender, Name name, Location location, Timezone timezone, String email, String phone, String cell, Picture picture) {
+    public Caregiver(String gender, Name name, Location location, Timezone timezone, String email, String phone, String cell, Picture picture, Login login) {
         this.gender = gender;
         this.name = name;
         this.location = location;
@@ -45,6 +48,7 @@ public class Caregiver {
         this.phone = phone;
         this.cell = cell;
         this.picture = picture;
+        this.login=login;
     }
 
 
@@ -79,4 +83,7 @@ public class Caregiver {
     public Picture getPicture() {
         return picture;
     }
+
+    public Login getLogin(){return login;}
+
 }
