@@ -106,7 +106,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
                 reservationFragment.setArguments(bundle);
                 System.out.println("Data "+Data.getData().getMainPageActivity().getPackageName());
                 FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, reservationFragment, "Reservation");
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("Slot");
                 transaction.commit();
 
 

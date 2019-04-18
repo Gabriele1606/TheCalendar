@@ -3,11 +3,13 @@ package com.example.gabri.thecalendar.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Gabri on 17/04/19.
  */
 
-public class Caregiver {
+public class Caregiver implements Serializable{
 
 
     @SerializedName("gender")
