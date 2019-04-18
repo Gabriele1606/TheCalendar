@@ -72,10 +72,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         List<Caregiver> caregivers = new ArrayList<Caregiver>();
         Caregiver caregiver;
 
-        for(int i=0; i<=10;i++){
-            caregiver= new Caregiver("Gabriele", "@mipmap/ic_launcher_round", "#5");
-            caregivers.add(caregiver);
-        }
+
 
 
 

@@ -7,12 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.gabri.thecalendar.API.API;
 import com.example.gabri.thecalendar.Adapters.CaregiverAdapter;
-import com.example.gabri.thecalendar.Adapters.PlaceholderAdapter;
+
 import com.example.gabri.thecalendar.Model.Caregiver;
+
+import com.example.gabri.thecalendar.Model.APIResponse;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Gabri on 18/04/19.
@@ -46,15 +60,42 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
 
     public List<Caregiver> getCaregivers(){
+
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(API.BASE_URL).addConverterFactory(GsonConverterFactory.create()).client(client).build();
+
+        API api = retrofit.create(API.class);
+
+        Call<APIResponse> call = api.getResult();
+
+        call.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                APIResponse result=response.body();
+                System.out.println(result.getCaregivers().size());
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                System.out.println("Not work");
+
+            }
+        });
+
+
+
+
         List<Caregiver> caregivers= new ArrayList<>();
 
-        Caregiver caregiver;
 
-        for(int i=0; i<=10;i++){
-            caregiver= new Caregiver("Gabriele", "@mipmap/ic_launcher_round", "#5");
-            caregivers.add(caregiver);
-        }
         return caregivers;
+
     }
 
 

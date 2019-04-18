@@ -58,8 +58,8 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
     @Override
     public void onBindViewHolder(PlaceholderHolder holder, int position) {
 
-        holder.careName.setText(caregivers.get(position).getName());
-        holder.roomNumber.setText(caregivers.get(position).getRoom());
+        //holder.careName.setText(caregivers.get(position).getName());
+        //holder.roomNumber.setText(caregivers.get(position).getRoom());
 
     }
 

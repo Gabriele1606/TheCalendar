@@ -55,7 +55,7 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
 
     @Override
     public void onBindViewHolder(CaregiverHolder holder, int position) {
-        holder.caregiverName.setText(caregivers.get(position).getName());
+        //holder.caregiverName.setText(caregivers.get(position).getName());
         //set images
     }
 
