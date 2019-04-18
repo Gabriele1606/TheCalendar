@@ -35,50 +35,30 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
     List<Caregiver> caregivers;
+    View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
-
-        caregivers=getCaregivers();
-
-        View view= inflater.inflate(R.layout.caregiver_list_fragment, container, false);
-
-        RecyclerView recyclerView = view.findViewById(R.id.caregiverListRecycler);
-        CaregiverAdapter caregiverAdapter= new CaregiverAdapter(view.getContext(),caregivers);
-        recyclerView.setAdapter(caregiverAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
-
-
+        getCaregivers();
+        this.view= inflater.inflate(R.layout.caregiver_list_fragment, container, false);
 
     return view;
 
     }
 
 
-    public List<Caregiver> getCaregivers(){
-
-
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(API.BASE_URL).addConverterFactory(GsonConverterFactory.create()).client(client).build();
-
+    public void getCaregivers(){
+        //Send GET Request using Retrofit
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(API.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         API api = retrofit.create(API.class);
-
         Call<APIResponse> call = api.getResult();
-
         call.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
                 APIResponse result=response.body();
-                System.out.println(result.getCaregivers().size());
+                fillRecyclerView(result.getCaregivers());
             }
 
             @Override
@@ -87,16 +67,13 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
             }
         });
-
-
-
-
-        List<Caregiver> caregivers= new ArrayList<>();
-
-
-        return caregivers;
-
     }
 
+    public void fillRecyclerView(ArrayList<Caregiver> caregivers){
+        RecyclerView recyclerView = view.findViewById(R.id.caregiverListRecycler);
+        CaregiverAdapter caregiverAdapter= new CaregiverAdapter(view.getContext(),caregivers);
+        recyclerView.setAdapter(caregiverAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
+    }
 
 }
