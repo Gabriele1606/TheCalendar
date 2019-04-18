@@ -101,7 +101,6 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(fDate.get(Calendar.DAY_OF_MONTH)+" "+fDate.get(Calendar.MONTH)+" "+fDate.get(Calendar.YEAR)+" "+hour);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("DATE", fDate);
                 bundle.putInt("HOUR", hour);

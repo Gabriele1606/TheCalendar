@@ -3,10 +3,14 @@ package com.example.gabri.thecalendar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.gabri.thecalendar.Model.Data;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -27,6 +31,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         //Retrieve data from Bundle
         Bundle bundle=getArguments();
         fillLayoutInformation(bundle, view);
+        caregiverCardCliccable(view);
 
 
         return view;
@@ -46,5 +51,18 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
 
     }
+
+     public void caregiverCardCliccable(View view){
+         CardView caregiverInfo= (CardView)view.findViewById(R.id.caregiverInfo);
+         caregiverInfo.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 CaregiverListFragment caregiverListFragment= new CaregiverListFragment();
+                 FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.reservationLayout, caregiverListFragment, "Caregivers");
+                 transaction.addToBackStack(null);
+                 transaction.commit();
+             }
+         });
+     }
 
 }
