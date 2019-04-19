@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.Caregiver;
@@ -29,7 +30,13 @@ import static android.app.Activity.RESULT_OK;
  * Created by Gabri on 17/04/19.
  */
 
+
+
+
 public class ReservationFragment extends android.support.v4.app.Fragment{
+
+    public static final int MAX_ROOM=10;
+    public static final int MIN_ROOM=1;
 
     View view;
     Bundle bundle;
@@ -44,6 +51,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         bundle=getArguments();
         fillLayoutInformation(bundle, view,null);
         caregiverCardCliccable(view);
+        setTapOnRoomSelection();
 
 
         return view;
@@ -58,6 +66,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                 int addID = data.getIntExtra("addressID", 0);
                 Caregiver caregiver= (Caregiver) data.getSerializableExtra("caregiver_selected");
                 fillLayoutInformation(bundle,view,caregiver);
+                setTapOnRoomSelection();
             }
         }
     }
@@ -70,7 +79,9 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
         CircleImageView careImage=view.findViewById(R.id.careImage);
         TextView resumeDate=(TextView)view.findViewById(R.id.resumeDate);
-        NumberPicker rooms=view.findViewById(R.id.number_picker);
+        TextView roomNumber=(TextView)view.findViewById(R.id.room_number);
+        roomNumber.setText("1");
+        //NumberPicker rooms=view.findViewById(R.id.number_picker);
         ImageView backImage=view.findViewById(R.id.reservation_back_image);
         ImageView emailIcon=view.findViewById(R.id.mail_icon);
         ImageView phoneIcon=view.findViewById(R.id.phone_icon);
@@ -82,8 +93,8 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         Glide.with(view).load(R.drawable.position_icon).into(positionIcon);
 
         resumeDate.setText(data.get(Calendar.DAY_OF_MONTH)+" "+data.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH)+" "+ data.get(Calendar.YEAR)+" "+hour+":00");
-        rooms.setMinValue(1);
-        rooms.setMaxValue(10);
+        //rooms.setMinValue(1);
+        //rooms.setMaxValue(10);
         if(caregiver!=null){
             careImage= view.findViewById(R.id.careImage);
             TextView careName=view.findViewById(R.id.caregiverName_frag);
@@ -112,6 +123,44 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                  caregiverListFragment.setTargetFragment(ReservationFragment.this, 3333);
                  transaction.addToBackStack("Reservation");
                  transaction.commit();
+             }
+         });
+     }
+
+     public void setTapOnRoomSelection(){
+         ImageView minusButton= view.findViewById(R.id.decrease);
+         ImageView plusButton= view.findViewById(R.id.increase);
+         final View v= this.view;
+
+         minusButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 TextView roomNumber=(TextView)v.findViewById(R.id.room_number);
+                 int number=Integer.parseInt(roomNumber.getText().toString());
+
+                 if(number>MIN_ROOM){
+                     number--;
+                     roomNumber.setText(String.valueOf(number));
+                 }else{
+                     Toast.makeText(view.getContext(),"There are "+MAX_ROOM+" rooms!",Toast.LENGTH_SHORT).show();
+                 }
+             }
+         });
+
+
+         plusButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 TextView roomNumber=(TextView)v.findViewById(R.id.room_number);
+                 int number=Integer.parseInt(roomNumber.getText().toString());
+
+                 if(number<MAX_ROOM){
+                     number++;
+                     roomNumber.setText(String.valueOf(number));
+                 }else{
+                     Toast.makeText(view.getContext(),"There are "+MAX_ROOM+" rooms!",Toast.LENGTH_SHORT).show();
+                 }
+
              }
          });
      }
