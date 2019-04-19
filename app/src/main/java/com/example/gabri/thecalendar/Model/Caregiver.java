@@ -2,6 +2,7 @@ package com.example.gabri.thecalendar.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.io.Serializable;
 

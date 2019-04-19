@@ -14,6 +14,8 @@ import android.view.MenuItem;
 
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
 import com.example.gabri.thecalendar.Model.Data;
+import com.raizlabs.android.dbflow.config.FlowManager;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -47,6 +49,7 @@ public class MainPage extends AppCompatActivity {
 **/
 
         setCalendar();
+        instantiateDatabase();
 
 
     }
@@ -132,6 +135,13 @@ public class MainPage extends AppCompatActivity {
         SlotAdapter slotAdapter= new SlotAdapter(mContex,hours, date);
         recyclerView.setAdapter(slotAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContex));
+    }
+
+    public void instantiateDatabase(){
+        FlowManager.init(this);
+
+        //To reset Database -> PAY ATTENYION
+        //FlowManager.getDatabase(AppDatabase.class).reset(this);
     }
 
 
