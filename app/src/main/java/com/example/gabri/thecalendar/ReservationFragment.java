@@ -18,11 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Reservation;
+import com.example.gabri.thecalendar.Model.Reservation_Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -41,13 +44,11 @@ import static android.app.Activity.RESULT_OK;
 
 public class ReservationFragment extends android.support.v4.app.Fragment{
 
-    public static final int MAX_ROOM=10;
-    public static final int MIN_ROOM=1;
-
     View view;
     Bundle bundle;
     EditText patientName;
     Caregiver caregiver;
+    List<Integer> roomsAvailable=new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +61,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
         //Retrieve data from Bundle
         bundle=getArguments();
+        findRoomsAvailable();
         fillLayoutInformation();
         caregiverCardCliccable();
         setTapOnRoomSelection();
@@ -84,18 +86,6 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         }
     }
 
-    /**
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        System.out.println("Distrutto");
-        Intent intent= ((MainPage)getActivity()).getIntent();
-        ((MainPage)getActivity()).finish();
-        startActivity(intent);
-
-    }
-    **/
-
 
     public void fillLayoutInformation(){
         Calendar data=(Calendar) bundle.getSerializable("DATE");
@@ -105,7 +95,8 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         CircleImageView careImage=view.findViewById(R.id.careImage);
         TextView resumeDate=(TextView)view.findViewById(R.id.resumeDate);
         TextView roomNumber=(TextView)view.findViewById(R.id.room_number);
-        roomNumber.setText("1");
+        //Get First room available. Caution with NullPointer
+        roomNumber.setText(Integer.toString(this.roomsAvailable.get(0)));
         ImageView backImage=view.findViewById(R.id.reservation_back_image);
         ImageView emailIcon=view.findViewById(R.id.mail_icon);
         ImageView phoneIcon=view.findViewById(R.id.phone_icon);
@@ -154,18 +145,23 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
          ImageView minusButton= view.findViewById(R.id.decrease);
          ImageView plusButton= view.findViewById(R.id.increase);
          final View v= this.view;
+         //Limits of the index to iterate.
+         final int minIndex=0;
+         final int maxIndex=this.roomsAvailable.size()-1;
+         final List<Integer> tmp=this.roomsAvailable;
 
          minusButton.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
                  TextView roomNumber=(TextView)v.findViewById(R.id.room_number);
-                 int number=Integer.parseInt(roomNumber.getText().toString());
 
-                 if(number>MIN_ROOM){
+                 int number=tmp.indexOf(Integer.parseInt(roomNumber.getText().toString()));
+
+                 if(number>minIndex){
                      number--;
-                     roomNumber.setText(String.valueOf(number));
+                     roomNumber.setText(String.valueOf(tmp.get(number)));
                  }else{
-                     Toast.makeText(view.getContext(),"There are "+MAX_ROOM+" rooms!",Toast.LENGTH_SHORT).show();
+                     Toast.makeText(view.getContext(),"No more rooms available!",Toast.LENGTH_SHORT).show();
                  }
              }
          });
@@ -175,13 +171,13 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
              @Override
              public void onClick(View view) {
                  TextView roomNumber=(TextView)v.findViewById(R.id.room_number);
-                 int number=Integer.parseInt(roomNumber.getText().toString());
+                 int number=tmp.indexOf(Integer.parseInt(roomNumber.getText().toString()));
 
-                 if(number<MAX_ROOM){
+                 if(number<maxIndex){
                      number++;
-                     roomNumber.setText(String.valueOf(number));
+                     roomNumber.setText(String.valueOf(tmp.get(number)));
                  }else{
-                     Toast.makeText(view.getContext(),"There are "+MAX_ROOM+" rooms!",Toast.LENGTH_SHORT).show();
+                     Toast.makeText(view.getContext(),"No more rooms available!",Toast.LENGTH_SHORT).show();
                  }
 
              }
@@ -244,6 +240,30 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
      public void refreshCalendar(){
          ((MainPage)getActivity()).generateHourList(Calendar.getInstance());
+     }
+
+     public void findRoomsAvailable(){
+         Calendar date=(Calendar) bundle.getSerializable("DATE");
+         int hour=(int)bundle.getInt("HOUR");
+         int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
+         String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
+         int year=date.get(Calendar.YEAR);
+
+         String dateInString=dayOfMonth+"_"+month+"_"+year;
+         for(int i=0;i< AppParameter.roomNumber;i++){
+             this.roomsAvailable.add(i);
+         }
+
+         List<Reservation> reservations=SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
+
+         List<Integer> roomAlreadyUsed= new ArrayList<>();
+
+         for(int i=0;i<reservations.size();i++){
+             roomAlreadyUsed.add(reservations.get(i).getRoomNumber());
+         }
+
+         this.roomsAvailable.removeAll(roomAlreadyUsed);
+
      }
 
 }

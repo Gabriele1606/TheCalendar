@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
+import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Database.AppDatabase;
 import com.example.gabri.thecalendar.Model.Reservation;
@@ -137,6 +138,7 @@ public class MainPage extends AppCompatActivity {
         SlotAdapter slotAdapter= new SlotAdapter(mContex,hours, date);
         recyclerView.setAdapter(slotAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContex));
+        recyclerView.scrollToPosition(AppParameter.startHour);
 
 
     }

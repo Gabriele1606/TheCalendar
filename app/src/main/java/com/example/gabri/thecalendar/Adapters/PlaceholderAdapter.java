@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Colors;
 import com.example.gabri.thecalendar.R;
@@ -34,6 +35,7 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
     private HashMap<Caregiver,Integer> map;
     private Context mContext;
     private List<String> colorSet;
+
 
 
     public class PlaceholderHolder extends RecyclerView.ViewHolder{
@@ -63,6 +65,7 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
         this.colorSet= Colors.getColorSet();
     }
 
+
     @Override
     public PlaceholderHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -81,11 +84,16 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
         String careLastName=caregivers.get(position).getName().getLast();
         int room= map.get(caregivers.get(position));
 
+
+
         shortName=Character.toUpperCase(careFirstName.charAt(0))+careFirstName.substring(1)+" "+Character.toUpperCase(careLastName.charAt(0))+".";
 
         holder.careName.setText(shortName);
         holder.roomNumber.setText("#"+Integer.toString(room));
         Glide.with(mContext).load(caregivers.get(position).getPicture().getThumbnail()).into(holder.careImage);
+
+        //Sice 10 color type were Hardcoded, the modulus value can be computed when there are more than 10 rooms
+        position=position%10;
         holder.placeholderCard.setCardBackgroundColor(Color.parseColor(colorSet.get(position)));
 
     }
@@ -94,9 +102,6 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
     public int getItemCount() {
         return caregivers.size();
     }
-
-
-
 
 
 

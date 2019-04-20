@@ -1,8 +1,10 @@
 package com.example.gabri.thecalendar.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Reservation;
@@ -45,6 +48,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         private View view;
         private ImageView addButton;
         private RecyclerView placeholderRecyclerView;
+        private CardView cardView;
 
 
         public SlotHolder(View itemView) {
@@ -53,6 +57,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
             hour=itemView.findViewById(R.id.hour);
             view=itemView;
             placeholderRecyclerView= itemView.findViewById(R.id.placeholderRecycler);
+            cardView=itemView.findViewById(R.id.slotCardView);
             addButton=itemView.findViewById(R.id.add_button);
         }
     }
@@ -116,23 +121,49 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         final Calendar fDate=date;
         final int hour=position;
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("DATE", fDate);
-                bundle.putInt("HOUR", hour);
+        if(slotAvailable(fDate,hour)) {
+            holder.cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
+            holder.addButton.setVisibility(View.VISIBLE);
+            holder.linearLayout.setClickable(true);
+            holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("DATE", fDate);
+                    bundle.putInt("HOUR", hour);
 
-                ReservationFragment reservationFragment= new ReservationFragment();
-                reservationFragment.setArguments(bundle);
-                System.out.println("Data "+Data.getData().getMainPageActivity().getPackageName());
-                FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, reservationFragment, "Reservation");
-                transaction.addToBackStack("Slot");
-                transaction.commit();
+                    ReservationFragment reservationFragment = new ReservationFragment();
+                    reservationFragment.setArguments(bundle);
+                    FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, reservationFragment, "Reservation");
+                    transaction.addToBackStack("Slot");
+                    transaction.commit();
 
 
-            }
-        });
+                }
+            });
+        }else{
+            holder.cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.lightGray));
+            holder.addButton.setVisibility(View.INVISIBLE);
+            holder.linearLayout.setClickable(false);
+        }
 
+    }
+
+    /**
+     * Method used to verify if the slot can be Cliccable or not (could be full)
+     * @param fDate
+     * @param hour
+     */
+
+    private boolean slotAvailable(Calendar fDate, int hour) {
+        int dayOfMonth= fDate.get(Calendar.DAY_OF_MONTH);
+        String month=fDate.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
+        int year=fDate.get(Calendar.YEAR);
+        String dateInString=dayOfMonth+"_"+month+"_"+year;
+        List<Reservation> reservations=SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
+        if(reservations.size()<AppParameter.roomNumber && hour>=AppParameter.startHour && hour<=AppParameter.stopHour) {
+            return true;
+        } else
+            return false;
     }
 }
