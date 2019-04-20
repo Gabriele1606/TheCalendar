@@ -20,9 +20,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Reservation;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -79,6 +83,18 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
             }
         }
     }
+
+    /**
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        System.out.println("Distrutto");
+        Intent intent= ((MainPage)getActivity()).getIntent();
+        ((MainPage)getActivity()).finish();
+        startActivity(intent);
+
+    }
+    **/
 
 
     public void fillLayoutInformation(){
@@ -188,9 +204,46 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                      patName.setError("");
                      return;
                  }
+
+                 addReservationToDB();
+                 refreshCalendar();
+                 Data.getData().getMainPageActivity().getSupportFragmentManager().popBackStack();
+
              }
          });
 
+     }
+
+
+     public void addReservationToDB(){
+         Calendar date= (Calendar)bundle.getSerializable("DATE");
+         int slot= (int)bundle.getInt("HOUR");
+         String careId=this.caregiver.getEmail();
+         int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
+         String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
+         int year=date.get(Calendar.YEAR);
+
+         String dateInString=dayOfMonth+"_"+month+"_"+year;
+
+         Reservation reservation = new Reservation();
+         reservation.setId(dateInString+slot+careId);
+         reservation.setDate(dateInString);
+         reservation.setSlot(slot);
+         reservation.setCaregiver(this.caregiver);
+         reservation.setPatientName(this.patientName.getText().toString());
+         TextView roomNumber=(TextView)view.findViewById(R.id.room_number);
+         int number=Integer.parseInt(roomNumber.getText().toString());
+         reservation.setRoomNumber(number);
+         reservation.save();
+         List<Reservation> list= SQLite.select().from(Reservation.class).queryList();
+         System.out.println(list.size());
+
+
+
+     }
+
+     public void refreshCalendar(){
+         ((MainPage)getActivity()).generateHourList(Calendar.getInstance());
      }
 
 }

@@ -14,11 +14,15 @@ import android.view.MenuItem;
 
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Database.AppDatabase;
+import com.example.gabri.thecalendar.Model.Reservation;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
@@ -48,13 +52,11 @@ public class MainPage extends AppCompatActivity {
         });
 **/
 
-        setCalendar();
-        instantiateDatabase();
 
+        instantiateDatabase();
+        setCalendar();
 
     }
-
-
 
 
     @Override
@@ -122,12 +124,12 @@ public class MainPage extends AppCompatActivity {
         });
     }
 
-    private void generateHourList(Calendar date){
+    public void generateHourList(Calendar date){
         List<String> hours = new ArrayList<String>();
         String tmp="";
 
-        for(int i=0;i<=12;i++){
-            tmp=i+":"+date.get(Calendar.DAY_OF_MONTH);
+        for(int i=0;i<=24;i++){
+            tmp=i+":00";
             hours.add(tmp);
         }
 
@@ -135,9 +137,11 @@ public class MainPage extends AppCompatActivity {
         SlotAdapter slotAdapter= new SlotAdapter(mContex,hours, date);
         recyclerView.setAdapter(slotAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContex));
+
+
     }
 
-    public void instantiateDatabase(){
+    private void instantiateDatabase(){
         FlowManager.init(this);
 
         //To reset Database -> PAY ATTENYION

@@ -1,58 +1,59 @@
 package com.example.gabri.thecalendar.Model;
 
+import com.example.gabri.thecalendar.Model.Database.AppDatabase;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.io.Serializable;
 
+import retrofit2.http.FieldMap;
+
 /**
  * Created by Gabri on 17/04/19.
  */
-
-public class Caregiver implements Serializable{
-
+@Table(database = AppDatabase.class)
+public class Caregiver extends BaseModel implements Serializable{
 
     @SerializedName("gender")
-    @Expose
+    @Column
     private String gender;
     @SerializedName("name")
-    @Expose
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
     private Name name;
     @SerializedName("location")
-    @Expose
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
     private Location location;
     @SerializedName("timezone")
-    @Expose
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
     private Timezone timezone;
     @SerializedName("email")
-    @Expose
+    @Column
+    @PrimaryKey
     private String email;
     @SerializedName("login")
-    @Expose
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
     private Login login;
     @SerializedName("phone")
-    @Expose
+    @Column
     private String phone;
     @SerializedName("cell")
-    @Expose
+    @Column
     private String cell;
 
     @SerializedName("picture")
-    @Expose
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
     private Picture picture;
 
-    public Caregiver(String gender, Name name, Location location, Timezone timezone, String email, String phone, String cell, Picture picture, Login login) {
-        this.gender = gender;
-        this.name = name;
-        this.location = location;
-        this.timezone = timezone;
-        this.email = email;
-        this.phone = phone;
-        this.cell = cell;
-        this.picture = picture;
-        this.login=login;
-    }
 
 
     public String getGender() {
@@ -89,4 +90,41 @@ public class Caregiver implements Serializable{
 
     public Login getLogin(){return login;}
 
+
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setName(Name name) {
+        this.name = name;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setTimezone(Timezone timezone) {
+        this.timezone = timezone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setCell(String cell) {
+        this.cell = cell;
+    }
+
+    public void setPicture(Picture picture) {
+        this.picture = picture;
+    }
 }

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_gravity="center"
-    android:elevation="3dp">
+    android:elevation="3dp"
+    app:cardBackgroundColor="@color/white">
 
 
 
@@ -16,33 +17,64 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_gravity="top"
-            android:background="#000000" />
+            android:background="@color/textGray" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/slotLinearLayout">
+            android:id="@+id/slotLinearLayout"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp">
 
 
             <TextView
                 android:id="@+id/hour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
+                android:textColor="@color/textGray"
+                android:textSize="30sp"
                 android:text="00:00" />
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/add_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/placeholderRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
 
             </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
 
         </LinearLayout>
     </LinearLayout>

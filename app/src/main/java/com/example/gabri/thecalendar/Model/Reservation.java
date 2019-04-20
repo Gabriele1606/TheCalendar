@@ -7,8 +7,6 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import java.util.Calendar;
-
 
 /**
  * Created by Gabri on 19/04/19.
@@ -16,12 +14,23 @@ import java.util.Calendar;
 @Table(database = AppDatabase.class)
 public class Reservation extends BaseModel {
 
+    /**
     @Column
     @PrimaryKey(autoincrement = true)
     int id;
+*/
+
+    /**
+     * As the primarykey the concatenation of Date+Slot+CaregiverID is used
+     * In this way is possible to avoid to insert into DB the same Caregiver in two different
+     * rooms at the same time
+     */
+    @Column
+    @PrimaryKey
+    String id;
 
     @Column
-    Calendar date;
+    String date;
 
     @Column
     int slot;
@@ -38,19 +47,19 @@ public class Reservation extends BaseModel {
 
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Calendar getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Calendar date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
