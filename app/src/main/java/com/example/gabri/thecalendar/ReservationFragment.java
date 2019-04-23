@@ -128,12 +128,20 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
     }
 
      public void caregiverCardCliccable(){
-         CardView caregiverInfo= (CardView)view.findViewById(R.id.caregiverInfo);
+         final Calendar data=(Calendar) bundle.getSerializable("DATE");
+         final int hour=(int)bundle.getInt("HOUR");
+         final CardView caregiverInfo= (CardView)view.findViewById(R.id.caregiverInfo);
+
          caregiverInfo.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
+                 Bundle bundle = new Bundle();
+                 bundle.putSerializable("DATE", data);
+                 bundle.putInt("HOUR", hour);
+
                  CaregiverListFragment caregiverListFragment= new CaregiverListFragment();
                  FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.reservationLayout, caregiverListFragment, "Caregivers");
+                 caregiverListFragment.setArguments(bundle);
                  caregiverListFragment.setTargetFragment(ReservationFragment.this, 3333);
                  transaction.addToBackStack("Reservation");
                  transaction.commit();

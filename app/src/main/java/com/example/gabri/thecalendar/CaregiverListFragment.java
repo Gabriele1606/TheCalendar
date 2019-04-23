@@ -1,5 +1,6 @@
 package com.example.gabri.thecalendar;
 
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,11 +19,16 @@ import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 
 import com.example.gabri.thecalendar.Model.APIResponse;
+import com.example.gabri.thecalendar.Model.Reservation;
+import com.example.gabri.thecalendar.Model.Reservation_Table;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 import okhttp3.Cache;
@@ -43,6 +49,8 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
     List<Caregiver> caregivers;
     View view;
+    Bundle bundle;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,8 +58,10 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
         getCaregivers();
         this.view= inflater.inflate(R.layout.caregiver_list_fragment, container, false);
+        this.bundle=getArguments();
 
-    return view;
+
+        return view;
 
     }
 
@@ -134,6 +144,7 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
                 if(result==null){
                     Toast.makeText(view.getContext(),"For the first time, you need Internet connection!", Toast.LENGTH_LONG).show();
                 }else{
+                    List<Caregiver> availableCaregivers=getAvailableCaregivers(result.getCaregivers());
                     fillRecyclerView(result.getCaregivers());
                 }
 
@@ -147,11 +158,32 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
         });
     }
 
-    public void fillRecyclerView(ArrayList<Caregiver> caregivers){
+    public void fillRecyclerView(List<Caregiver> caregivers){
         RecyclerView recyclerView = view.findViewById(R.id.caregiverListRecycler);
         CaregiverAdapter caregiverAdapter= new CaregiverAdapter(view.getContext(),caregivers);
         recyclerView.setAdapter(caregiverAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
     }
+
+    public List<Caregiver> getAvailableCaregivers(List<Caregiver> allCaregivers){
+        Calendar date= (Calendar)bundle.getSerializable("DATE");
+        int hour= (int)bundle.getInt("HOUR");
+        int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
+        String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
+        int year=date.get(Calendar.YEAR);
+
+        String dateInString=dayOfMonth+"_"+month+"_"+year;
+
+        List<Reservation> reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
+        List<Caregiver> alreadyBusyCaregivers= new ArrayList<>();
+        for(int i=0;i<reservations.size();i++){
+            alreadyBusyCaregivers.add(reservations.get(i).getCaregiver());
+        }
+        //From all Caregivers, the busyCaregivers are removed in such a way to visualize only the available.
+        allCaregivers.removeAll(alreadyBusyCaregivers);
+
+        return allCaregivers;
+    }
+
 
 }

@@ -127,4 +127,19 @@ public class Caregiver extends BaseModel implements Serializable{
     public void setPicture(Picture picture) {
         this.picture = picture;
     }
+
+    /**
+     * Since the JSON response not give the of the Caregivers: two Caregivers objects are equal if the have the same email.
+     * Email by definition is unique for each person in the world.
+     * @param otherCare
+     * @return
+     */
+    @Override
+    public boolean equals(Object otherCare) {
+        if(otherCare == null) return false;
+        else if (otherCare instanceof Caregiver && this.getEmail().equals(((Caregiver) otherCare).getEmail()))
+            return true;
+        else return false;
+    }
+
 }
