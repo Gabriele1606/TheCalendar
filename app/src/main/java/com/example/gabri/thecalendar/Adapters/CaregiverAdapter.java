@@ -67,7 +67,7 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
         String caregiverTitle=caregivers.get(position).getName().getTitle();
         String caregiverFirst=caregivers.get(position).getName().getFirst();
         String caregiverLast=caregivers.get(position).getName().getLast();
-        String caregiverImage=caregivers.get(position).getPicture().getMedium();
+        String caregiverImage=caregivers.get(position).getPicture().getThumbnail();
         holder.caregiverName.setText(caregiverTitle+" "+caregiverFirst+" "+caregiverLast);
         Glide.with(mContext).load(caregiverImage).into(holder.caregiverImage);
 

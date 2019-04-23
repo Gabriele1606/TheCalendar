@@ -24,4 +24,12 @@ public final class AppParameter {
      */
     public static final int stopHour=16;
 
+
+    /**
+     * Constant used to set the Cache Size of 10MB.
+     * Pay attention to modify this value.
+     */
+    public static final int cacheSize= 10 * 1024 * 1024;
+
+
 }
