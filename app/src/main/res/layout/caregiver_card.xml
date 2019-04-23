@@ -1,7 +1,7 @@
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
     android:id="@+id/caregiver_card"
-    android:layout_height="90dp"
+    android:layout_height="110dp"
     android:backgroundTint="@color/white"
     android:layout_marginBottom="3dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -21,16 +21,151 @@
             android:src="@drawable/empty_user"
             />
 
-        <TextView
-            android:id="@+id/caregiverName_card"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="CAREGIVER NAME"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
+            android:layout_marginLeft="15dp"
+            android:stretchColumns="*">
+            <TableRow
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/caregiverName_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:text="Caregiver Name"
+                    android:textSize="20sp"
+                    android:layout_gravity="left"
+                    android:textStyle="bold" />
+            </TableRow>
+        </TableLayout>
 
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:stretchColumns="*">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="Age: "
+                    android:textStyle="italic"/>
+
+                <TextView
+                    android:id="@+id/care_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:textStyle="italic"/>
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="City: "
+                    android:textStyle="italic"/>
+
+                <TextView
+                    android:id="@+id/care_city_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="city"
+                    android:textStyle="italic"/>
+
+            </TableRow>
+            <TableRow
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+
+
+
+            </TableRow>
+
+        </TableLayout>
+
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:stretchColumns="*">
+
+            <TableRow
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="Hours: "
+                    android:textStyle="italic"/>
+
+                <TextView
+                    android:id="@+id/hour_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:textStyle="italic"/>
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="Extra hours: "
+                    android:textStyle="italic"/>
+
+                <TextView
+                    android:id="@+id/extra_hour_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:textStyle="italic"/>
+
+            </TableRow>
+            <TableRow
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+
+
+
+            </TableRow>
+
+        </TableLayout>
+    </LinearLayout>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

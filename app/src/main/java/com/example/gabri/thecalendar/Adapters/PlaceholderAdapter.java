@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Colors;
+import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.R;
 import com.raizlabs.android.dbflow.sql.language.Operator;
 
@@ -86,11 +87,11 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
 
 
 
-        shortName=Character.toUpperCase(careFirstName.charAt(0))+careFirstName.substring(1)+" "+Character.toUpperCase(careLastName.charAt(0))+".";
+        shortName=careFirstName+" "+careLastName.charAt(0)+".";
 
         holder.careName.setText(shortName);
         holder.roomNumber.setText("#"+Integer.toString(room));
-        Glide.with(mContext).load(caregivers.get(position).getPicture().getThumbnail()).into(holder.careImage);
+        GlideApp.with(mContext).load(caregivers.get(position).getPicture().getThumbnail()).into(holder.careImage);
 
         //Sice 10 color type were Hardcoded, the modulus value can be computed when there are more than 10 rooms
         position=position%10;

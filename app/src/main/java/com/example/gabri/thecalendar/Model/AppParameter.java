@@ -32,4 +32,19 @@ public final class AppParameter {
     public static final int cacheSize= 10 * 1024 * 1024;
 
 
+    /**
+     * Constant used to indicate the Hours per Week.
+     * By constraints is set to 5 Hours
+     */
+
+    public static final int hourPerWeek= 5;
+
+    /**
+     * Constant used to indicate the extra Hours per Week.
+     * By constraints is set to 1 Hours
+     */
+
+    public static final int extraHoursPerWeek=1;
+
+
 }

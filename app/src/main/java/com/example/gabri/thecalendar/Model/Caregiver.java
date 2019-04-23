@@ -42,6 +42,12 @@ public class Caregiver extends BaseModel implements Serializable{
     @Column
     @ForeignKey(saveForeignKeyModel = true)
     private Login login;
+
+    @Column
+    @ForeignKey(saveForeignKeyModel = true)
+    @SerializedName("dob")
+    private Birth dob;
+
     @SerializedName("phone")
     @Column
     private String phone;
@@ -126,6 +132,14 @@ public class Caregiver extends BaseModel implements Serializable{
 
     public void setPicture(Picture picture) {
         this.picture = picture;
+    }
+
+    public Birth getDob() {
+        return dob;
+    }
+
+    public void setDob(Birth dob) {
+        this.dob = dob;
     }
 
     /**

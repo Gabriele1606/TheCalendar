@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
 import com.example.gabri.thecalendar.Model.Reservation_Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -102,11 +103,11 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         ImageView phoneIcon=view.findViewById(R.id.phone_icon);
         ImageView positionIcon=view.findViewById(R.id.position_icon);
         Button reserveButton=view.findViewById(R.id.reserve_button);
-        Glide.with(view).load(R.drawable.reservation_background).into(backImage);
-        Glide.with(view).load(R.drawable.empty_user).into(careImage);
-        Glide.with(view).load(R.drawable.email_icon).into(emailIcon);
-        Glide.with(view).load(R.drawable.phone_icon).into(phoneIcon);
-        Glide.with(view).load(R.drawable.position_icon).into(positionIcon);
+        GlideApp.with(view).load(R.drawable.reservation_background).into(backImage);
+        GlideApp.with(view).load(R.drawable.empty_user).into(careImage);
+        GlideApp.with(view).load(R.drawable.email_icon).into(emailIcon);
+        GlideApp.with(view).load(R.drawable.phone_icon).into(phoneIcon);
+        GlideApp.with(view).load(R.drawable.position_icon).into(positionIcon);
         resumeDate.setText(data.get(Calendar.DAY_OF_MONTH)+" "+data.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH)+" "+ data.get(Calendar.YEAR)+" "+hour+":00");
      ;
         if(caregiver!=null){
@@ -232,6 +233,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
          Reservation reservation = new Reservation();
          reservation.setId(dateInString+slot+careId);
          reservation.setDate(dateInString);
+         reservation.setWeekOfYear(date.get(Calendar.WEEK_OF_YEAR));
          reservation.setSlot(slot);
          reservation.setCaregiver(this.caregiver);
          reservation.setPatientName(this.patientName.getText().toString());

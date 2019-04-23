@@ -27,15 +27,27 @@ public class Name extends BaseModel{
     }
 
     public String getTitle() {
-        return title;
+        String careTitle =this.title;
+
+        String shortName=Character.toUpperCase(careTitle.charAt(0))+careTitle.substring(1);
+
+        return shortName;
     }
 
     public String getFirst() {
-        return first;
+        String careFirst =this.first;
+
+        String shortName=Character.toUpperCase(careFirst.charAt(0))+careFirst.substring(1);
+
+        return shortName;
     }
 
     public String getLast() {
-        return last;
+        String careLast =this.last;
+
+        String shortName=Character.toUpperCase(careLast.charAt(0))+careLast.substring(1);
+
+        return shortName;
     }
 
     public void setId(int id) {

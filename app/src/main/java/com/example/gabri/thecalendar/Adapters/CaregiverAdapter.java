@@ -10,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,12 +34,17 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
 
     private List<Caregiver> caregivers= new ArrayList<Caregiver>();
     private Context mContext;
+    private HashMap<String, Integer> careHourWeekMap;
 
     public class CaregiverHolder extends RecyclerView.ViewHolder{
 
         private TextView caregiverName;
         private CircleImageView caregiverImage;
         private CardView cardview;
+        private TextView careAge;
+        private TextView careCity;
+        private TextView hourWeek;
+        private TextView extraHourWeek;
 
         public CaregiverHolder(View itemView) {
             super(itemView);
@@ -44,14 +52,19 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
             caregiverName= itemView.findViewById(R.id.caregiverName_card);
             caregiverImage= itemView.findViewById(R.id.caregiverImage_card);
             cardview=itemView.findViewById(R.id.caregiver_card);
+            careAge=itemView.findViewById(R.id.care_age);
+            careCity=itemView.findViewById(R.id.care_city_card);
+            hourWeek=itemView.findViewById(R.id.hour_week);
+            extraHourWeek=itemView.findViewById(R.id.extra_hour_week);
 
         }
     }
 
 
-    public CaregiverAdapter(Context context, List<Caregiver> caregivers){
+    public CaregiverAdapter(Context context, List<Caregiver> caregivers, HashMap<String, Integer> careHourWeekMap){
         this.caregivers=caregivers;
         this.mContext=context;
+        this.careHourWeekMap=careHourWeekMap;
     }
 
     @Override
@@ -64,13 +77,29 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
 
     @Override
     public void onBindViewHolder(CaregiverHolder holder, int position) {
+        String shortName;
+        String careTitle=caregivers.get(position).getName().getTitle();
+        String careFirstName=caregivers.get(position).getName().getFirst();
+        String careLastName=caregivers.get(position).getName().getLast();
+
+
+        shortName=careTitle+" "+careFirstName+" "+careLastName;
+
         String caregiverTitle=caregivers.get(position).getName().getTitle();
         String caregiverFirst=caregivers.get(position).getName().getFirst();
         String caregiverLast=caregivers.get(position).getName().getLast();
         String caregiverImage=caregivers.get(position).getPicture().getThumbnail();
-        holder.caregiverName.setText(caregiverTitle+" "+caregiverFirst+" "+caregiverLast);
-        Glide.with(mContext).load(caregiverImage).into(holder.caregiverImage);
+        holder.caregiverName.setText(shortName);
+        GlideApp.with(mContext).load(caregiverImage).into(holder.caregiverImage);
 
+        holder.extraHourWeek.setText("1");
+        if(!this.careHourWeekMap.containsKey(this.caregivers.get(position).getEmail())) {
+            holder.hourWeek.setText(Integer.toString(AppParameter.hourPerWeek));
+        }else{
+           holder.hourWeek.setText(Integer.toString(AppParameter.hourPerWeek-this.careHourWeekMap.get(this.caregivers.get(position).getEmail())));
+        }
+        holder.careAge.setText(Integer.toString(this.caregivers.get(position).getDob().getAge()));
+        holder.careCity.setText(this.caregivers.get(position).getLocation().getCity());
         setTapCaregiver(holder, position);
     }
 

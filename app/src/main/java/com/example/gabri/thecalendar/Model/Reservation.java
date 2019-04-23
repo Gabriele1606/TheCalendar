@@ -33,6 +33,9 @@ public class Reservation extends BaseModel {
     String date;
 
     @Column
+    int weekOfYear;
+
+    @Column
     int slot;
 
     @Column
@@ -93,5 +96,13 @@ public class Reservation extends BaseModel {
 
     public void setRoomNumber(int roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public int getWeekOfYear() {
+        return weekOfYear;
+    }
+
+    public void setWeekOfYear(int weekOfYear) {
+        this.weekOfYear = weekOfYear;
     }
 }

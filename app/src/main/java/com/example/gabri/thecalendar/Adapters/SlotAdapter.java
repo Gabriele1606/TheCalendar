@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
 import com.example.gabri.thecalendar.Model.Reservation_Table;
 import com.example.gabri.thecalendar.R;
@@ -80,7 +81,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
     @Override
     public void onBindViewHolder(SlotHolder holder, int position) {
         holder.hour.setText(hours.get(position));
-        Glide.with(mContext).load(R.drawable.red_plus_icon).into(holder.addButton);
+        GlideApp.with(mContext).load(R.drawable.red_plus_icon).into(holder.addButton);
         setTapSlot(holder,this.date, position);
 
 

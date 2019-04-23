@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 
 import com.example.gabri.thecalendar.Model.APIResponse;
+import com.example.gabri.thecalendar.Model.Login;
 import com.example.gabri.thecalendar.Model.Reservation;
 import com.example.gabri.thecalendar.Model.Reservation_Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -27,6 +29,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -144,8 +147,9 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
                 if(result==null){
                     Toast.makeText(view.getContext(),"For the first time, you need Internet connection!", Toast.LENGTH_LONG).show();
                 }else{
-                    List<Caregiver> availableCaregivers=getAvailableCaregivers(result.getCaregivers());
-                    fillRecyclerView(result.getCaregivers());
+                    filterAvailableCaregiversInSlot(result.getCaregivers());
+                    HashMap<String, Integer> careHourWeekMap = getAvailableCaregiversInWeek(result.getCaregivers());
+                    fillRecyclerView(result.getCaregivers(), careHourWeekMap);
                 }
 
             }
@@ -158,14 +162,14 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
         });
     }
 
-    public void fillRecyclerView(List<Caregiver> caregivers){
+    public void fillRecyclerView(List<Caregiver> caregivers, HashMap<String, Integer> careHourWeekMap){
         RecyclerView recyclerView = view.findViewById(R.id.caregiverListRecycler);
-        CaregiverAdapter caregiverAdapter= new CaregiverAdapter(view.getContext(),caregivers);
+        CaregiverAdapter caregiverAdapter= new CaregiverAdapter(view.getContext(),caregivers, careHourWeekMap);
         recyclerView.setAdapter(caregiverAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false));
     }
 
-    public List<Caregiver> getAvailableCaregivers(List<Caregiver> allCaregivers){
+    public void filterAvailableCaregiversInSlot(List<Caregiver> allCaregivers){
         Calendar date= (Calendar)bundle.getSerializable("DATE");
         int hour= (int)bundle.getInt("HOUR");
         int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
@@ -182,7 +186,46 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
         //From all Caregivers, the busyCaregivers are removed in such a way to visualize only the available.
         allCaregivers.removeAll(alreadyBusyCaregivers);
 
-        return allCaregivers;
+    }
+
+    public HashMap<String, Integer> getAvailableCaregiversInWeek(List<Caregiver> allCaregivers){
+        Calendar date= (Calendar)bundle.getSerializable("DATE");
+        int hour= (int)bundle.getInt("HOUR");
+        int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
+        String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
+        int year=date.get(Calendar.YEAR);
+
+        String dateInString=dayOfMonth+"_"+month+"_"+year;
+
+        //Return all the reservations done in a specific weekOfYear, where the weekOfYear is obtained when user click on slotHour.
+        List<Reservation> reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.weekOfYear.eq(date.get(Calendar.WEEK_OF_YEAR))).queryList();
+
+
+        HashMap<String, Integer> careHourWeekMap = new HashMap<String, Integer>();
+        Caregiver tmp;
+        for (int i=0; i<reservations.size();i++){
+            tmp=reservations.get(i).getCaregiver();
+            if(!careHourWeekMap.containsKey(tmp.getEmail())){
+                careHourWeekMap.put(tmp.getEmail(),1);
+            }else{
+                careHourWeekMap.put(tmp.getEmail(), careHourWeekMap.get(tmp.getEmail())+1);
+            }
+        }
+
+        //From the MAP and from the List of Caregivers to visualize I remove the caregiver that for a specified week has reached 5+1 hours per Week.
+
+        int count=careHourWeekMap.size();
+        for(int i=0; i< allCaregivers.size() && count>0;i++){
+            String careKey=allCaregivers.get(i).getEmail();
+            if(careHourWeekMap.containsKey(careKey)){
+                if(careHourWeekMap.get(careKey)>=(AppParameter.hourPerWeek+AppParameter.extraHoursPerWeek)){
+                    allCaregivers.remove(i);
+                }
+                count--;
+            }
+        }
+
+        return careHourWeekMap;
     }
 
 
