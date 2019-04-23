@@ -196,6 +196,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
      public void setTapReservationButton(){
          Button reserveButton=view.findViewById(R.id.reserve_button);
          final Caregiver care =this.caregiver;
+         final Calendar date=(Calendar) bundle.getSerializable("DATE");
          final EditText patName=this.patientName;
          reserveButton.setOnClickListener(new View.OnClickListener() {
              @Override
@@ -211,7 +212,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                  }
 
                  addReservationToDB();
-                 refreshCalendar();
+                 refreshCalendar(date);
                  Data.getData().getMainPageActivity().getSupportFragmentManager().popBackStack();
 
              }
@@ -248,8 +249,8 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
      }
 
-     public void refreshCalendar(){
-         ((MainPage)getActivity()).generateHourList(Calendar.getInstance());
+     public void refreshCalendar(Calendar date){
+         ((MainPage)getActivity()).generateHourList(date);
      }
 
      public void findRoomsAvailable(){
