@@ -93,18 +93,23 @@ public class MainPage extends AppCompatActivity {
     private void setCalendar() {
         /* starts before 1 month from now */
         Calendar startDate = Calendar.getInstance();
+        System.out.println("------------------------------>"+startDate.toString());
         startDate.add(Calendar.MONTH, -1);
         /* ends after 1 month from now */
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
 
+
+        //When you start the Application, generate the HourList of Today
+        generateHourList(Calendar.getInstance());
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
                 .range(startDate, endDate)
                 .datesNumberOnScreen(5)
                 .build();
 
-        //When you start the Application, generate the HourList of Today
-        generateHourList(Calendar.getInstance());
+        //horizontalCalendar.selectDate(Calendar.getInstance(), true);
+
+
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override

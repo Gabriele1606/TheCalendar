@@ -139,8 +139,19 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
 
     private boolean placeholderEditable(){
         Calendar dateOfToday= Calendar.getInstance();
+
+        dateOfToday.set(Calendar.MILLISECOND, 0);
+        dateOfToday.set(Calendar.HOUR , 0);
+        dateOfToday.set(Calendar.MINUTE , 0);
+        dateOfToday.set(Calendar.SECOND , 0);
+
+        this.date.set(Calendar.MILLISECOND, 0);
+        this.date.set(Calendar.HOUR , 0);
+        this.date.set(Calendar.MINUTE , 0);
+        this.date.set(Calendar.SECOND , 0);
+
         //Compare the date of the placeholder selected with the date of today. If the date of the Placeholder is older than today make it not cliccable.
-        if(this.date.compareTo(dateOfToday)>=0)
+        if(this.date.compareTo(dateOfToday)>=0 && this.hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
             return true;
         else
             return false;

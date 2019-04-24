@@ -25,6 +25,9 @@ import com.example.gabri.thecalendar.R;
 import com.example.gabri.thecalendar.ReservationFragment;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -159,11 +162,26 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
     private boolean slotAvailable(Calendar fDate, int hour) {
         int dayOfMonth = fDate.get(Calendar.DAY_OF_MONTH);
         Calendar dateOfToday = Calendar.getInstance();
+        System.out.println("----------->>> DATA OGGI "+dateOfToday.get(Calendar.DAY_OF_MONTH)+" "+dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
+        System.out.println("----------->>> DATA COM "+fDate.get(Calendar.DAY_OF_MONTH)+" "+fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
         String month = fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = fDate.get(Calendar.YEAR);
         String dateInString = dayOfMonth + "_" + month + "_" + year;
         List<Reservation> reservations = SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
-        if ((reservations.size() < AppParameter.roomNumber && hour >= AppParameter.startHour && hour <= AppParameter.stopHour) && (fDate.compareTo(dateOfToday)>=0)) {
+
+
+        dateOfToday.set(Calendar.MILLISECOND, 0);
+        dateOfToday.set(Calendar.HOUR , 0);
+        dateOfToday.set(Calendar.MINUTE , 0);
+        dateOfToday.set(Calendar.SECOND , 0);
+
+        fDate.set(Calendar.MILLISECOND, 0);
+        fDate.set(Calendar.HOUR , 0);
+        fDate.set(Calendar.MINUTE , 0);
+        fDate.set(Calendar.SECOND , 0);
+
+
+        if ((reservations.size() < AppParameter.roomNumber && hour >= AppParameter.startHour && hour <= AppParameter.stopHour) && (fDate.compareTo(dateOfToday)>=0) && (hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY))) {
             return true;
         } else
             return false;
