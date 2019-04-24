@@ -83,7 +83,9 @@ public class Reservation extends BaseModel {
     }
 
     public String getPatientName() {
-        return patientName;
+
+        String patient=Character.toUpperCase(this.patientName.charAt(0))+this.patientName.substring(1);
+        return patient;
     }
 
     public void setPatientName(String patientName) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,173 +11,189 @@
     android:focusable="true">
 
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lightGray"
-        android:orientation="vertical">
+        android:fillViewport="true"
+        android:background="@color/lightGray">
 
-        <ImageView
-            android:id="@+id/reservation_back_image"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:background="#FFFF"
-            android:scaleType="centerCrop"
-            />
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="90dp"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/caregiverInfo"
-            android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:backgroundTint="@color/white">
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="270dp">
 
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/careImage"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="18dp"
-                    />
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/reservation_back_image"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="190dp"
+                    android:layout_alignParentStart="true"
+                    android:background="#FFFF"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible">
 
-                    <TableLayout
+                </ImageView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/caregiverInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="175dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:backgroundTint="@color/white"
+                    android:visibility="visible"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:stretchColumns="*">
-                        <TableRow
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent">
-                            <TextView
-                                android:id="@+id/caregiverName_frag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingTop="8dp"
-                                android:text="Caregiver Name"
-                                android:textSize="25sp"
-                                android:layout_gravity="left"
-                                android:textStyle="bold" />
-                        </TableRow>
-                    </TableLayout>
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginLeft="20dp"
-                        android:stretchColumns="1">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                        <TableRow
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent">
 
-                            <ImageView
-                                android:id="@+id/mail_icon"
-                                android:layout_width="17dp"
-                                android:layout_height="17dp"
-                                android:layout_gravity="left"
-                                 />
-                            <TextView
-                                android:id="@+id/care_mail"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="7dp"
-                                android:textSize="16sp"
-                                android:text="mail@address.com"
-                                android:textStyle="italic"/>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/careImage"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:layout_alignBottom="@+id/reservation_back_image"
+                            android:layout_alignStart="@+id/caregiverInfo"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="20dp" />
 
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="7dp">
+                            android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/phone_icon"
-                            android:layout_width="17dp"
-                            android:layout_height="17dp"
-                            android:layout_gravity="left"
-                             />
-                        <TextView
-                            android:id="@+id/care_phone"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="7dp"
-                            android:textSize="16sp"
-                            android:text="Phone Number"
-                            android:textStyle="italic"/>
-                        </TableRow>
+                            <TableLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:stretchColumns="*">
 
-                        <TableRow
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="7dp">
+                                <TableRow
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent">
 
-                            <ImageView
-                                android:id="@+id/position_icon"
-                                android:layout_width="17dp"
-                                android:layout_height="17dp"
-                                android:layout_gravity="left"
-                                 />
-                            <TextView
-                                android:id="@+id/care_city"
+                                    <TextView
+                                        android:id="@+id/caregiverName_frag"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="left"
+                                        android:paddingTop="8dp"
+                                        android:text="Caregiver Name"
+                                        android:textSize="25sp"
+                                        android:textStyle="bold" />
+                                </TableRow>
+                            </TableLayout>
+
+                            <TableLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginTop="18dp"
+                                android:stretchColumns="1">
+
+                                <TableRow
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:id="@+id/mail_icon"
+                                        android:layout_width="17dp"
+                                        android:layout_height="17dp"
+                                        android:layout_gravity="left" />
+
+                                    <TextView
+                                        android:id="@+id/care_mail"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="7dp"
+                                        android:text="mail@address.com"
+                                        android:textSize="16sp"
+                                        android:textStyle="italic" />
+
+                                </TableRow>
+
+                                <TableRow
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="7dp">
+
+                                    <ImageView
+                                        android:id="@+id/phone_icon"
+                                        android:layout_width="17dp"
+                                        android:layout_height="17dp"
+                                        android:layout_gravity="left" />
+
+                                    <TextView
+                                        android:id="@+id/care_phone"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="7dp"
+                                        android:text="Phone Number"
+                                        android:textSize="16sp"
+                                        android:textStyle="italic" />
+                                </TableRow>
+
+                                <TableRow
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="7dp">
+
+                                    <ImageView
+                                        android:id="@+id/position_icon"
+                                        android:layout_width="17dp"
+                                        android:layout_height="17dp"
+                                        android:layout_gravity="left" />
+
+                                    <TextView
+                                        android:id="@+id/care_city"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="7dp"
+                                        android:text="City"
+                                        android:textSize="16sp"
+                                        android:textStyle="italic" />
+                                </TableRow>
+                            </TableLayout>
+
+                            <TableLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="7dp"
-                                android:textSize="16sp"
-                                android:text="City"
-                                android:textStyle="italic"/>
-                        </TableRow>
-                    </TableLayout>
-                    <TableLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp"
-                        android:layout_marginRight="30dp"
-                        android:stretchColumns="*">
-                    <TableRow
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent">
+                                android:layout_marginLeft="140dp"
+                                android:layout_marginRight="25dp"
+                                android:layout_marginTop="0dp"
+                                android:stretchColumns="*">
 
-                        <TextView
-                            android:layout_width="88dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:text="Select..."
-                            android:textColor="@color/red"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                                <TableRow
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent">
 
-                        </TableRow>
-                    </TableLayout>
-                </LinearLayout>
+                                    <ImageView
+                                        android:id="@+id/select_care_button"
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="right"
+                                        android:textColor="@color/red"
+                                        android:textSize="20sp"
+                                        android:textStyle="bold" />
 
-            </LinearLayout>
+                                </TableRow>
+                            </TableLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
 
 
-        </android.support.v7.widget.CardView>
+                </android.support.v7.widget.CardView>
+
+
+            </RelativeLayout>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -238,11 +254,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="40dp"
                         android:layout_marginRight="40dp"
-                        android:maxLines="2"
+                        android:maxLines="1"
                         android:singleLine="true"
                         android:lines="1"
                         android:textSize="20sp"
-                        android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+                        android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:id="@+id/patient_name_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginRight="40dp"
+                        android:paddingTop="8dp"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:lines="1"
+                        android:textSize="25sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
 
                 </TableRow>
@@ -276,7 +307,8 @@
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:layout_marginTop="7dp"
-                            android:src="@drawable/minus_icon" />
+                            android:src="@drawable/minus_icon"
+                            android:visibility="visible"/>
 
                         <TextView
                             android:id="@+id/room_number"
@@ -294,6 +326,7 @@
                             android:layout_height="35dp"
                             android:layout_marginTop="7dp"
                             android:src="@drawable/plus_icon"
+                            android:visibility="visible"
                              />
                     </LinearLayout>
                 </TableRow>
@@ -320,21 +353,76 @@
     </LinearLayout>
         </android.support.v7.widget.CardView>
 
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom">
+
+                <Button
+                    android:id="@+id/reserve_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="18dp"
+                    android:background="@color/red"
+                    android:padding="12dp"
+                    android:text="RESERVE"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:visibility="visible" />
+
+
+                <TableLayout
+                    android:id="@+id/reservation_detail_table_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:stretchColumns="*"
+                    android:visibility="invisible">
+
+                    <TableRow
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:id="@+id/modify_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/red"
+                            android:padding="12dp"
+                            android:text="MODIFY"
+                            android:textColor="@color/white"
+                            android:textSize="20dp"
+                            android:visibility="visible" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        </View>
+
+                        <Button
+                            android:id="@+id/delete_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/red"
+                            android:padding="12dp"
+                            android:text="DELETE"
+                            android:textColor="@color/white"
+                            android:textSize="20dp"
+                            android:visibility="visible" />
+                    </TableRow>
+                </TableLayout>
+
+
+            </RelativeLayout>
+
     </LinearLayout>
+    </ScrollView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
-    <Button
-        android:id="@+id/reserve_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/red"
-        android:padding="12dp"
-        android:text="RESERVE"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
-    </RelativeLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

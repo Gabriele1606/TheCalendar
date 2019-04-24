@@ -5,6 +5,7 @@
     android:layout_height="100dp"
     android:layout_gravity="center"
     android:elevation="3dp"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/white">
 
 

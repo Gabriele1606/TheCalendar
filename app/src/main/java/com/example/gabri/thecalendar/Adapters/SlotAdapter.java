@@ -105,7 +105,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         }
 
         RecyclerView recyclerView = holder.placeholderRecyclerView;
-        PlaceholderAdapter placeholderAdapter= new PlaceholderAdapter(mContext,caregivers,map);
+        PlaceholderAdapter placeholderAdapter= new PlaceholderAdapter(mContext,caregivers,this.date,position, map);
         recyclerView.setAdapter(placeholderAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
 
@@ -157,12 +157,13 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
      */
 
     private boolean slotAvailable(Calendar fDate, int hour) {
-        int dayOfMonth= fDate.get(Calendar.DAY_OF_MONTH);
-        String month=fDate.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
-        int year=fDate.get(Calendar.YEAR);
-        String dateInString=dayOfMonth+"_"+month+"_"+year;
-        List<Reservation> reservations=SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
-        if(reservations.size()<AppParameter.roomNumber && hour>=AppParameter.startHour && hour<=AppParameter.stopHour) {
+        int dayOfMonth = fDate.get(Calendar.DAY_OF_MONTH);
+        Calendar dateOfToday = Calendar.getInstance();
+        String month = fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int year = fDate.get(Calendar.YEAR);
+        String dateInString = dayOfMonth + "_" + month + "_" + year;
+        List<Reservation> reservations = SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
+        if ((reservations.size() < AppParameter.roomNumber && hour >= AppParameter.startHour && hour <= AppParameter.stopHour) && (fDate.compareTo(dateOfToday)>=0)) {
             return true;
         } else
             return false;

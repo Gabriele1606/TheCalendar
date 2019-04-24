@@ -94,6 +94,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
 
         CircleImageView careImage=view.findViewById(R.id.careImage);
+        ImageView redPlus= view.findViewById(R.id.select_care_button);
         TextView resumeDate=(TextView)view.findViewById(R.id.resumeDate);
         TextView roomNumber=(TextView)view.findViewById(R.id.room_number);
         //Get First room available. Caution with NullPointer
@@ -108,6 +109,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         GlideApp.with(view).load(R.drawable.email_icon).into(emailIcon);
         GlideApp.with(view).load(R.drawable.phone_icon).into(phoneIcon);
         GlideApp.with(view).load(R.drawable.position_icon).into(positionIcon);
+        GlideApp.with(view).load(R.drawable.red_plus_icon).into(redPlus);
         resumeDate.setText(data.get(Calendar.DAY_OF_MONTH)+" "+data.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH)+" "+ data.get(Calendar.YEAR)+" "+hour+":00");
      ;
         if(caregiver!=null){
@@ -214,6 +216,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                  addReservationToDB();
                  refreshCalendar(date);
                  Data.getData().getMainPageActivity().getSupportFragmentManager().popBackStack();
+                 Toast.makeText(view.getContext(), "The reservation was successful!", Toast.LENGTH_LONG).show();
 
              }
          });
