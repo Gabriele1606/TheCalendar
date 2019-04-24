@@ -118,23 +118,32 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
         final Caregiver selectedCare= this.caregivers.get(position);
         final Calendar selectedDate= this.date;
         final int hour= this.hour;
-        holder.placeholderCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("CAREGIVER", selectedCare);
-                bundle.putSerializable("DATE", selectedDate);
-                bundle.putInt("HOUR", hour);
+        if(placeholderEditable()) {
+            holder.placeholderCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("CAREGIVER", selectedCare);
+                    bundle.putSerializable("DATE", selectedDate);
+                    bundle.putInt("HOUR", hour);
 
-                DetailsReservationFragment detailReservationFragment= new DetailsReservationFragment();
-                detailReservationFragment.setArguments(bundle);
-                FragmentTransaction transaction= Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, detailReservationFragment, "Reservation");
-                transaction.addToBackStack("Slot");
-                transaction.commit();
-            }
-        });
+                    DetailsReservationFragment detailReservationFragment = new DetailsReservationFragment();
+                    detailReservationFragment.setArguments(bundle);
+                    FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, detailReservationFragment, "Reservation");
+                    transaction.addToBackStack("Slot");
+                    transaction.commit();
+                }
+            });
+        }
     }
 
-
+    private boolean placeholderEditable(){
+        Calendar dateOfToday= Calendar.getInstance();
+        //Compare the date of the placeholder selected with the date of today. If the date of the Placeholder is older than today make it not cliccable.
+        if(this.date.compareTo(dateOfToday)>=0)
+            return true;
+        else
+            return false;
+    }
 
 }
