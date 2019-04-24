@@ -165,9 +165,10 @@
                             <TableLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="140dp"
+                                android:layout_marginLeft="150dp"
                                 android:layout_marginRight="25dp"
                                 android:layout_marginTop="0dp"
+                                android:layout_marginBottom="3dp"
                                 android:stretchColumns="*">
 
                                 <TableRow
@@ -315,8 +316,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
-                            android:layout_marginLeft="35dp"
-                            android:layout_marginRight="35dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="30dp"
                             android:textStyle="bold"
                             android:textSize="35sp" />
 
