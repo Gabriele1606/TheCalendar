@@ -23,6 +23,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
@@ -92,28 +93,36 @@ public class MainPage extends AppCompatActivity {
 
     private void setCalendar() {
         /* starts before 1 month from now */
-        Calendar startDate = Calendar.getInstance();
-        System.out.println("------------------------------>"+startDate.toString());
+        Calendar startDate = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        //System.out.println("------------------------------>"+startDate.toString());
         startDate.add(Calendar.MONTH, -1);
         /* ends after 1 month from now */
-        Calendar endDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         endDate.add(Calendar.MONTH, 1);
 
 
-        //When you start the Application, generate the HourList of Today
-        generateHourList(Calendar.getInstance());
+        Calendar todayItaly= Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+
         HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
                 .range(startDate, endDate)
                 .datesNumberOnScreen(5)
+                .defaultSelectedDate(todayItaly)
                 .build();
 
-        //horizontalCalendar.selectDate(Calendar.getInstance(), true);
 
+
+        //horizontalCalendar.selectDate(tmp, true);
+        //horizontalCalendar.goToday(true);
+
+        //When you start the Application, generate the HourList of Today
+        generateHourList(Calendar.getInstance(TimeZone.getTimeZone("CEST")));
 
 
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+
+                System.out.println("Date selected ----> " +date.get(Calendar.DAY_OF_MONTH)+" "+date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
                 generateHourList(date);
             }
 
@@ -131,6 +140,9 @@ public class MainPage extends AppCompatActivity {
     }
 
     public void generateHourList(Calendar date){
+
+        System.out.println("Genero lista di ----> " +date.get(Calendar.DAY_OF_MONTH)+" "+date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
+
         List<String> hours = new ArrayList<String>();
         String tmp="";
 
@@ -143,7 +155,11 @@ public class MainPage extends AppCompatActivity {
         SlotAdapter slotAdapter= new SlotAdapter(mContex,hours, date);
         recyclerView.setAdapter(slotAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContex));
-        recyclerView.scrollToPosition(AppParameter.startHour);
+
+        if(dateIsEqual(date))
+            recyclerView.scrollToPosition(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        else
+            recyclerView.scrollToPosition(AppParameter.startHour);
 
 
     }
@@ -153,6 +169,24 @@ public class MainPage extends AppCompatActivity {
 
         //To reset Database -> PAY ATTENYION
         //FlowManager.getDatabase(AppDatabase.class).reset(this);
+    }
+
+    public boolean dateIsEqual(Calendar date){
+        Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        int dayOfMonthToday = dateOfToday.get(Calendar.DAY_OF_MONTH);
+        String monthToday = dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int yearToday = dateOfToday.get(Calendar.YEAR);
+        String dateInStringToday = dayOfMonthToday + "_" + monthToday + "_" + yearToday;
+
+        int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
+        String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int year = date.get(Calendar.YEAR);
+        String dateInString = dayOfMonth + "_" + month + "_" + year;
+
+        if(dateInString.equals(dateInStringToday))
+            return true;
+        else
+            return false;
     }
 
 

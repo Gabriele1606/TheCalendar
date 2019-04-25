@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by Gabri on 17/04/19.
@@ -160,30 +161,58 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
      */
 
     private boolean slotAvailable(Calendar fDate, int hour) {
+
+        if (!reservationSlotComplete(fDate, hour) && respectHourOfWork(hour) && (dateIsAfter(fDate) || slotOfEqualDateAvailable(fDate, hour)))
+            return true;
+         else
+            return false;
+    }
+
+
+    private boolean reservationSlotComplete(Calendar fDate, int hour){
         int dayOfMonth = fDate.get(Calendar.DAY_OF_MONTH);
-        Calendar dateOfToday = Calendar.getInstance();
-        System.out.println("----------->>> DATA OGGI "+dateOfToday.get(Calendar.DAY_OF_MONTH)+" "+dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
-        System.out.println("----------->>> DATA COM "+fDate.get(Calendar.DAY_OF_MONTH)+" "+fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
         String month = fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = fDate.get(Calendar.YEAR);
         String dateInString = dayOfMonth + "_" + month + "_" + year;
         List<Reservation> reservations = SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
 
-
-        dateOfToday.set(Calendar.MILLISECOND, 0);
-        dateOfToday.set(Calendar.HOUR , 0);
-        dateOfToday.set(Calendar.MINUTE , 0);
-        dateOfToday.set(Calendar.SECOND , 0);
-
-        fDate.set(Calendar.MILLISECOND, 0);
-        fDate.set(Calendar.HOUR , 0);
-        fDate.set(Calendar.MINUTE , 0);
-        fDate.set(Calendar.SECOND , 0);
-
-
-        if ((reservations.size() < AppParameter.roomNumber && hour >= AppParameter.startHour && hour <= AppParameter.stopHour) && (fDate.compareTo(dateOfToday)>=0) && (hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY))) {
-            return true;
-        } else
+        if(reservations.size()< AppParameter.roomNumber)
             return false;
+        else
+            return true;
+    }
+
+    private boolean respectHourOfWork(int hour){
+        if(hour >= AppParameter.startHour && hour <= AppParameter.stopHour)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean dateIsAfter(Calendar fDate){
+        Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        if(fDate.compareTo(dateOfToday)>0)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean slotOfEqualDateAvailable(Calendar fDate, int hour){
+        Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        int dayOfMonthToday = dateOfToday.get(Calendar.DAY_OF_MONTH);
+        String monthToday = dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int yearToday = dateOfToday.get(Calendar.YEAR);
+        String dateInStringToday = dayOfMonthToday + "_" + monthToday + "_" + yearToday;
+
+        int dayOfMonth = fDate.get(Calendar.DAY_OF_MONTH);
+        String month = fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int year = fDate.get(Calendar.YEAR);
+        String dateInString = dayOfMonth + "_" + month + "_" + year;
+
+        if(dateInStringToday.equals(dateInString) && hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
+            return true;
+        else
+            return false;
+
     }
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -138,7 +139,7 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
     }
 
     private boolean placeholderEditable(){
-        Calendar dateOfToday= Calendar.getInstance();
+        Calendar dateOfToday= Calendar.getInstance(TimeZone.getTimeZone("CEST"));
 
         dateOfToday.set(Calendar.MILLISECOND, 0);
         dateOfToday.set(Calendar.HOUR , 0);
@@ -151,7 +152,7 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
         this.date.set(Calendar.SECOND , 0);
 
         //Compare the date of the placeholder selected with the date of today. If the date of the Placeholder is older than today make it not cliccable.
-        if(this.date.compareTo(dateOfToday)>=0 && this.hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
+        if(this.date.compareTo(dateOfToday)>=0 && this.hour>Calendar.getInstance(TimeZone.getTimeZone("CEST")).get(Calendar.HOUR_OF_DAY))
             return true;
         else
             return false;
