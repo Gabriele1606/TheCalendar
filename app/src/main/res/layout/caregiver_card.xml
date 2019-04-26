@@ -29,7 +29,7 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:stretchColumns="*">
             <TableRow
                 android:layout_width="0dp"
@@ -47,17 +47,17 @@
         </TableLayout>
 
 
-
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:stretchColumns="*">
-
-            <TableRow
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp">
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,6 +66,24 @@
                     android:text="Age: "
                     android:textStyle="italic"/>
 
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="Hours: "
+                    android:textStyle="italic"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/care_age"
                     android:layout_width="wrap_content"
@@ -73,57 +91,6 @@
                     android:layout_marginLeft="7dp"
                     android:textSize="18sp"
                     android:text="0"
-                    android:textStyle="italic"/>
-
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="7dp"
-                    android:textSize="18sp"
-                    android:text="City: "
-                    android:textStyle="italic"/>
-
-                <TextView
-                    android:id="@+id/care_city_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="7dp"
-                    android:textSize="18sp"
-                    android:text="city"
-                    android:textStyle="italic"/>
-
-            </TableRow>
-            <TableRow
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
-
-
-
-
-            </TableRow>
-
-        </TableLayout>
-
-
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:stretchColumns="*">
-
-            <TableRow
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="7dp"
-                    android:textSize="18sp"
-                    android:text="Hours: "
                     android:textStyle="italic"/>
 
                 <TextView
@@ -135,6 +102,23 @@
                     android:text="0"
                     android:textStyle="italic"/>
 
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="7dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="City: "
+                    android:textStyle="italic"/>
+
+
 
 
                 <TextView
@@ -142,7 +126,22 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="7dp"
                     android:textSize="18sp"
-                    android:text="Extra hours: "
+                    android:text="Extra: "
+                    android:textStyle="italic"/>
+
+
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/care_city_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:textSize="18sp"
+                    android:text="city"
                     android:textStyle="italic"/>
 
                 <TextView
@@ -154,17 +153,9 @@
                     android:text="0"
                     android:textStyle="italic"/>
 
-            </TableRow>
-            <TableRow
-                android:layout_width="0dp"
-                android:layout_height="match_parent">
+            </LinearLayout>
 
-
-
-
-            </TableRow>
-
-        </TableLayout>
+        </LinearLayout>
     </LinearLayout>
     </LinearLayout>
 
