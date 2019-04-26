@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -56,7 +57,8 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                              Bundle savedInstanceState) {
 
         view= inflater.inflate(R.layout.reservation_fragment, container, false);
-
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
         patientName=view.findViewById(R.id.patient_name);
 
 
@@ -87,6 +89,13 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+
+    }
 
     public void fillLayoutInformation(){
         Calendar data=(Calendar) bundle.getSerializable("DATE");
@@ -245,10 +254,6 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
          int number=Integer.parseInt(roomNumber.getText().toString());
          reservation.setRoomNumber(number);
          reservation.save();
-         List<Reservation> list= SQLite.select().from(Reservation.class).queryList();
-         System.out.println(list.size());
-
-
 
      }
 

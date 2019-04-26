@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 
 import android.support.v7.widget.CardView;
@@ -56,6 +57,8 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
         view= inflater.inflate(R.layout.reservation_fragment, container, false);
 
         patientName=view.findViewById(R.id.patient_name);
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
 
 
         //Retrieve data from Bundle
@@ -89,6 +92,15 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+
+    }
+
 
 
     public void prepareForReservationDetails(){
@@ -353,8 +365,6 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
         int number=Integer.parseInt(roomNumber.getText().toString());
         reservation.setRoomNumber(number);
         reservation.save();
-        List<Reservation> list= SQLite.select().from(Reservation.class).queryList();
-        System.out.println(list.size());
     }
 
     public void refreshCalendar(Calendar date){

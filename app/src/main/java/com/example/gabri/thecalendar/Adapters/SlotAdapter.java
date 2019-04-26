@@ -2,6 +2,8 @@ package com.example.gabri.thecalendar.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
@@ -13,10 +15,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.gabri.thecalendar.API.API;
+import com.example.gabri.thecalendar.Model.APIResponse;
 import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.Model.AutoFill;
 import com.example.gabri.thecalendar.Model.Caregiver;
+import com.example.gabri.thecalendar.Model.Caregiver_Table;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
@@ -25,6 +32,7 @@ import com.example.gabri.thecalendar.R;
 import com.example.gabri.thecalendar.ReservationFragment;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -33,7 +41,18 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
+
+import okhttp3.Cache;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Gabri on 17/04/19.
@@ -215,4 +234,5 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
             return false;
 
     }
+
 }
