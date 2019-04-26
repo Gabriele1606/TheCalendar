@@ -33,9 +33,8 @@ private Calendar date;
         ArrayList<Integer> emptySlots= getEmptySlots();
 
 
-
+        HashMap<String, Integer> caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
         for(int i=0;i<emptySlots.size();i++) {
-            HashMap<String, Integer> caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
             Integer[] roomsAvilable= getAvailableRooms(emptySlots.get(i));
             HashMap<String, Integer> caregiverHoursAvailableForRooms= new HashMap<>(caregiverHoursAvailable);
             for (int j = 0; j < roomsAvilable.length; j++) {
@@ -74,6 +73,11 @@ private Calendar date;
                     //Don't fill the slot
                 }
                 caregiverHoursAvailableForRooms.remove(careKey);
+
+                if(caregiverHoursAvailable.get(careKey)-1>0)
+                    caregiverHoursAvailable.put(careKey, caregiverHoursAvailable.get(careKey)-1);
+                else
+                    caregiverHoursAvailable.remove(careKey);
             }
         }
     }
@@ -207,7 +211,7 @@ private Calendar date;
             usedSlots.add(reservations.get(i).getSlot());
         }
 
-        //slots.removeAll(usedSlots);
+        slots.removeAll(usedSlots);
 
         return slots;
     }
