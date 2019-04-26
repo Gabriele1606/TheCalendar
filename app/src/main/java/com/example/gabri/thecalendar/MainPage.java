@@ -311,10 +311,11 @@ public class MainPage extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                         AutoFill autofill= new AutoFill(date);
                         autofill.start();
                         slotAdapter.notifyDataSetChanged();
-                        dialogInterface.dismiss();
+
 
                     }
                 });
