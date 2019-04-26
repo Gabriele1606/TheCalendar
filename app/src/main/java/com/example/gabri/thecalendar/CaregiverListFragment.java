@@ -1,16 +1,19 @@
 package com.example.gabri.thecalendar;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.gabri.thecalendar.API.API;
@@ -53,19 +56,35 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
     List<Caregiver> caregivers;
     View view;
     Bundle bundle;
+    ProgressBar progressBar;
+    SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getCaregivers();
         this.view= inflater.inflate(R.layout.caregiver_list_fragment, container, false);
+        getCaregivers();
+        setSwipeAction();
         this.bundle=getArguments();
 
+        progressBar = view.findViewById(R.id.care_loading_bar);
+        progressBar.setVisibility(View.VISIBLE);
 
         return view;
 
+    }
+
+    public void setSwipeAction(){
+        swipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                getCaregivers();
+            }
+        });
     }
 
     public boolean isNetworkAvailable(){
@@ -150,6 +169,8 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
                     filterAvailableCaregiversInSlot(result.getCaregivers());
                     HashMap<String, Integer> careHourWeekMap = getAvailableCaregiversInWeek(result.getCaregivers());
                     fillRecyclerView(result.getCaregivers(), careHourWeekMap);
+                    progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
             }

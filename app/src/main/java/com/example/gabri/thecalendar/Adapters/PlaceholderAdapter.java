@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -139,23 +140,39 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
     }
 
     private boolean placeholderEditable(){
-        Calendar dateOfToday= Calendar.getInstance(TimeZone.getTimeZone("CEST"));
-
-        dateOfToday.set(Calendar.MILLISECOND, 0);
-        dateOfToday.set(Calendar.HOUR , 0);
-        dateOfToday.set(Calendar.MINUTE , 0);
-        dateOfToday.set(Calendar.SECOND , 0);
-
-        this.date.set(Calendar.MILLISECOND, 0);
-        this.date.set(Calendar.HOUR , 0);
-        this.date.set(Calendar.MINUTE , 0);
-        this.date.set(Calendar.SECOND , 0);
 
         //Compare the date of the placeholder selected with the date of today. If the date of the Placeholder is older than today make it not cliccable.
-        if(this.date.compareTo(dateOfToday)>=0 && this.hour>Calendar.getInstance(TimeZone.getTimeZone("CEST")).get(Calendar.HOUR_OF_DAY))
+        if(dateIsAfter(this.date) || slotOfEqualDateAvailable(this.date,this.hour))
             return true;
         else
             return false;
+    }
+
+    private boolean dateIsAfter(Calendar fDate){
+        Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        if(fDate.compareTo(dateOfToday)>0)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean slotOfEqualDateAvailable(Calendar fDate, int hour){
+        Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        int dayOfMonthToday = dateOfToday.get(Calendar.DAY_OF_MONTH);
+        String monthToday = dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int yearToday = dateOfToday.get(Calendar.YEAR);
+        String dateInStringToday = dayOfMonthToday + "_" + monthToday + "_" + yearToday;
+
+        int dayOfMonth = fDate.get(Calendar.DAY_OF_MONTH);
+        String month = fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int year = fDate.get(Calendar.YEAR);
+        String dateInString = dayOfMonth + "_" + month + "_" + year;
+
+        if(dateInStringToday.equals(dateInString) && hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
+            return true;
+        else
+            return false;
+
     }
 
 }
