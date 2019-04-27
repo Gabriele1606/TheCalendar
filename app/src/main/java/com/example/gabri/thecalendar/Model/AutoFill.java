@@ -205,8 +205,11 @@ private Calendar date;
         List<Reservation> reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString)).queryList();
 
         ArrayList<Integer> slots=new ArrayList<>();
+
         for(int i=AppParameter.startHour;i<=AppParameter.stopHour;i++){
-            slots.add(i);
+            //In this case, it is possible to avoid to fill the "old" slot of Today
+            if(slotIsToFill(i))
+                slots.add(i);
         }
 
         ArrayList<Integer> usedSlots=new ArrayList<>();
@@ -241,6 +244,34 @@ private Calendar date;
         //Integer[] roomsArray=rooms.toArray(new Integer[rooms.size()]);
 
         return rooms;
+    }
+
+    /**
+     * This Method check if it is possible to fill an "Old" slot hour of today
+     * @param fDate
+     * @param hour
+     * @return
+     */
+    private boolean slotIsToFill(int hour){
+        Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
+        int dayOfMonthToday = dateOfToday.get(Calendar.DAY_OF_MONTH);
+        String monthToday = dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int yearToday = dateOfToday.get(Calendar.YEAR);
+        String dateInStringToday = dayOfMonthToday + "_" + monthToday + "_" + yearToday;
+
+        int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
+        String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+        int year = date.get(Calendar.YEAR);
+        String dateInString = dayOfMonth + "_" + month + "_" + year;
+
+        if(dateInStringToday.equals(dateInString)){
+            if(hour>Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                return true;
+            }else
+                return false;
+        }else
+            return true;
+
     }
 
     private int findClosest(Integer arr[], int target)
