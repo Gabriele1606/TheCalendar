@@ -1,5 +1,10 @@
 package com.example.gabri.thecalendar.Model;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.example.gabri.thecalendar.Adapters.SlotAdapter;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Operator;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -12,6 +17,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
+
 /**
  * Created by Gabri on 26/04/19.
  */
@@ -23,24 +30,34 @@ HashMap<String, Integer> caresWorkLess;
 
 private Calendar date;
 
+
     public AutoFill(Calendar date){
         this.date=date;
     }
 
 
     public void start(){
+        ArrayList<Integer> roomsAvilable;
+        HashMap<String, Integer> caregiverHoursAvailableForRooms;
+        HashMap<String, Integer> caregiverHoursAvailableTmp;
+        HashMap<String, Integer> careNearestRoomMap ;
+        HashMap<String, Integer> caregiverWorkLess ;
+
+
         ArrayList<Caregiver> allCaregivers=getAllCaregivers();
-        ArrayList<Integer> emptySlots= getEmptySlots();
+
+        ArrayList<Integer> emptySlots= getEmptySlots(date);
 
 
         HashMap<String, Integer> caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
+
         for(int i=0;i<emptySlots.size();i++) {
-            ArrayList<Integer> roomsAvilable = getAvailableRooms(emptySlots.get(i));
-            HashMap<String, Integer> caregiverHoursAvailableForRooms = new HashMap<>(caregiverHoursAvailable);
+            roomsAvilable = getAvailableRooms(emptySlots.get(i));
+            caregiverHoursAvailableForRooms = new HashMap<>(caregiverHoursAvailable);
             for (int j = 0; j < roomsAvilable.size(); j++) {
-                HashMap<String, Integer> caregiverHoursAvailableTmp = new HashMap<>(caregiverHoursAvailableForRooms);
-                HashMap<String, Integer> careNearestRoomMap = getCaregiversWorkInDayNearestRoom(emptySlots.get(i), roomsAvilable.get(j));
-                HashMap<String, Integer> caregiverWorkLess = getCaregiversWorkLessPreviousWeeks();
+                caregiverHoursAvailableTmp = new HashMap<>(caregiverHoursAvailableForRooms);
+                careNearestRoomMap = getCaregiversWorkInDayNearestRoom(emptySlots.get(i), roomsAvilable.get(j));
+                caregiverWorkLess = getCaregiversWorkLessPreviousWeeks();
 
 
                 if (caregiverHoursAvailableForRooms.keySet().toArray().length > 0){
@@ -106,7 +123,7 @@ private Calendar date;
     return caregivers;
     }
 
-    private HashMap<String, Integer> getAvailableCaregiversInWeek(ArrayList<Caregiver> allCaregivers){
+    public HashMap<String, Integer> getAvailableCaregiversInWeek(ArrayList<Caregiver> allCaregivers){
 
         //Return all the reservations done in a specific weekOfYear, where the weekOfYear is obtained when user click on slotHour.
         List<Reservation> reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.weekOfYear.eq(date.get(Calendar.WEEK_OF_YEAR))).queryList();
@@ -131,7 +148,7 @@ private Calendar date;
         return careHourWeekMap;
     }
 
-    private HashMap<String, Integer> getCaregiversWorkInDayNearestRoom(int hour, int roomTarget){
+    public HashMap<String, Integer> getCaregiversWorkInDayNearestRoom(int hour, int roomTarget){
 
         if(reservationsOfTheDay==null) {
             int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
@@ -160,7 +177,7 @@ private Calendar date;
     }
 
 
-    private HashMap<String, Integer> getCaregiversWorkLessPreviousWeeks(){
+    public HashMap<String, Integer> getCaregiversWorkLessPreviousWeeks(){
 
          if(caresWorkLess==null) {
              int weekOfTheYear = this.date.get(Calendar.WEEK_OF_YEAR);
@@ -196,7 +213,7 @@ private Calendar date;
         return caresWorkLess;
     }
 
-    private ArrayList<Integer> getEmptySlots(){
+    public ArrayList<Integer> getEmptySlots(Calendar date){
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
         String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = date.get(Calendar.YEAR);
@@ -214,7 +231,8 @@ private Calendar date;
 
         ArrayList<Integer> usedSlots=new ArrayList<>();
         for(int i=0;i<reservations.size();i++){
-            usedSlots.add(reservations.get(i).getSlot());
+            if(!usedSlots.contains(reservations.get(i).getSlot()))
+                usedSlots.add(reservations.get(i).getSlot());
         }
 
         slots.removeAll(usedSlots);
@@ -222,7 +240,7 @@ private Calendar date;
         return slots;
     }
 
-    private ArrayList<Integer> getAvailableRooms(int slot){
+    public ArrayList<Integer> getAvailableRooms(int slot){
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
         String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = date.get(Calendar.YEAR);
@@ -252,7 +270,7 @@ private Calendar date;
      * @param hour
      * @return
      */
-    private boolean slotIsToFill(int hour){
+    public boolean slotIsToFill(int hour){
         Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         int dayOfMonthToday = dateOfToday.get(Calendar.DAY_OF_MONTH);
         String monthToday = dateOfToday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
@@ -359,5 +377,6 @@ private Calendar date;
         reservation.save();
 
     }
+
 
 }

@@ -232,6 +232,7 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
         TextView patientNameText= view.findViewById(R.id.patient_name_text);
         EditText patientName=view.findViewById(R.id.patient_name);
 
+        GlideApp.with(view).load(R.drawable.red_plus_icon).into(redPlus);
         redPlus.setVisibility(View.VISIBLE);
         reservation.setVisibility(View.VISIBLE);
         minusButton.setVisibility(View.VISIBLE);

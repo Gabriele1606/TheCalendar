@@ -186,6 +186,7 @@ public class MainPage extends AppCompatActivity {
         //FlowManager.getDatabase(AppDatabase.class).reset(this);
     }
 
+
     public boolean dateIsEqual(Calendar date){
         Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         int dayOfMonthToday = dateOfToday.get(Calendar.DAY_OF_MONTH);
@@ -311,10 +312,11 @@ public class MainPage extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
                         AutoFill autofill= new AutoFill(date);
+                        dialogInterface.dismiss();
                         autofill.start();
                         slotAdapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(),"Autofill completed!", Toast.LENGTH_LONG).show();
 
 
                     }

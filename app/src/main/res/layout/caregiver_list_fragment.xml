@@ -51,11 +51,13 @@
 
     <ProgressBar
         android:id="@+id/care_loading_bar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
         android:progressTint="@color/red"
+        android:secondaryProgressTint="@color/red"
+        
+
         />
 
 
