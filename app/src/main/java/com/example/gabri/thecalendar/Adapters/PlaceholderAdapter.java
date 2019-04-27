@@ -90,6 +90,7 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
     @Override
     public void onBindViewHolder(PlaceholderHolder holder, int position) {
 
+        System.out.println("Position---> " +position);
 
         setTapPlaceholder(holder, position);
         String shortName;
