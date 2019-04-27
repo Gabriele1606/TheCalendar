@@ -28,58 +28,59 @@ private Calendar date;
     }
 
 
-    public void start(){
-        ArrayList<Caregiver> allCaregivers=getAllCaregivers();
-        ArrayList<Integer> emptySlots= getEmptySlots();
+    public void start() {
+        ArrayList<Caregiver> allCaregivers = getAllCaregivers();
+        ArrayList<Integer> emptySlots = getEmptySlots();
 
 
         HashMap<String, Integer> caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
-        for(int i=0;i<emptySlots.size();i++) {
-            Integer[] roomsAvilable= getAvailableRooms(emptySlots.get(i));
-            HashMap<String, Integer> caregiverHoursAvailableForRooms= new HashMap<>(caregiverHoursAvailable);
-            for (int j = 0; j < roomsAvilable.length; j++) {
-                HashMap<String, Integer> caregiverHoursAvailableTmp= new HashMap<>(caregiverHoursAvailableForRooms);
-                HashMap<String, Integer> careNearestRoomMap = getCaregiversWorkInDayNearestRoom(emptySlots.get(i), roomsAvilable[j]);
+        for (int i = 0; i < emptySlots.size(); i++) {
+            ArrayList<Integer> roomsAvilable = getAvailableRooms(emptySlots.get(i));
+            HashMap<String, Integer> caregiverHoursAvailableForRooms = new HashMap<>(caregiverHoursAvailable);
+            for (int j = 0; j < roomsAvilable.size(); j++) {
+                HashMap<String, Integer> caregiverHoursAvailableTmp = new HashMap<>(caregiverHoursAvailableForRooms);
+                HashMap<String, Integer> careNearestRoomMap = getCaregiversWorkInDayNearestRoom(emptySlots.get(i), roomsAvilable.get(j));
                 HashMap<String, Integer> caregiverWorkLess = getCaregiversWorkLessPreviousWeeks();
 
+                if (caregiverHoursAvailableForRooms.keySet().toArray().length > 0){
+                    String careKey = (String) caregiverHoursAvailableForRooms.keySet().toArray()[0];
 
-                String careKey = (String) caregiverHoursAvailableForRooms.keySet().toArray()[0];
+                    //If the CaregiversAvailable Set is not empty, Itersection with Caregivers that already works
+                    if (caregiverHoursAvailableTmp.keySet().size() > 1) {
+                        caregiverHoursAvailableTmp.keySet().retainAll(careNearestRoomMap.keySet());
 
-                //If the CaregiversAvailable Set is not empty, Itersection with Caregivers that already works
-                if (caregiverHoursAvailableTmp.keySet().size()>1) {
-                    caregiverHoursAvailableTmp.keySet().retainAll(careNearestRoomMap.keySet());
-
-                    if (caregiverHoursAvailableTmp.keySet().size()>1) {
-                        careKey = (String) caregiverHoursAvailableTmp.keySet().toArray()[0];
-                        caregiverHoursAvailableTmp.keySet().retainAll(caregiverWorkLess.keySet());
-
-                        if (caregiverHoursAvailableTmp.keySet().size() >= 1) {
+                        if (caregiverHoursAvailableTmp.keySet().size() > 1) {
                             careKey = (String) caregiverHoursAvailableTmp.keySet().toArray()[0];
-                            addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable[j]);
+                            caregiverHoursAvailableTmp.keySet().retainAll(caregiverWorkLess.keySet());
+
+                            if (caregiverHoursAvailableTmp.keySet().size() >= 1) {
+                                careKey = (String) caregiverHoursAvailableTmp.keySet().toArray()[0];
+                                addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable.get(j));
+                            } else {
+                                addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable.get(j));
+                            }
+
+                        } else if (caregiverHoursAvailableTmp.keySet().size() == 1) {
+                            careKey = (String) caregiverHoursAvailableTmp.keySet().toArray()[0];
+                            addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable.get(j));
+
                         } else {
-                            addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable[j]);
+                            addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable.get(j));
                         }
-
                     } else if (caregiverHoursAvailableTmp.keySet().size() == 1) {
-                        careKey = (String) caregiverHoursAvailableTmp.keySet().toArray()[0];
-                        addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable[j]);
-
+                        addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable.get(j));
                     } else {
-                        addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable[j]);
+                        //Don't fill the slot
                     }
-                } else if (caregiverHoursAvailableTmp.keySet().size() == 1) {
-                    addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable[j]);
-                } else {
-                    //Don't fill the slot
-                }
-                caregiverHoursAvailableForRooms.remove(careKey);
+                    caregiverHoursAvailableForRooms.remove(careKey);
 
-                if(caregiverHoursAvailable.get(careKey)-1>0)
-                    caregiverHoursAvailable.put(careKey, caregiverHoursAvailable.get(careKey)-1);
-                else
-                    caregiverHoursAvailable.remove(careKey);
-            }
+                    if (caregiverHoursAvailable.get(careKey) - 1 > 0)
+                        caregiverHoursAvailable.put(careKey, caregiverHoursAvailable.get(careKey) - 1);
+                    else
+                        caregiverHoursAvailable.remove(careKey);
+                }
         }
+    }
     }
 
     private ArrayList<Caregiver> getAllCaregivers(){
@@ -147,9 +148,11 @@ private Calendar date;
             if (Math.abs(room - roomTarget) < min) {
                 min = Math.abs(room - roomTarget);
                 careNearestRoomMap.clear();
-                careNearestRoomMap.put(tmp.getEmail(), room);
+                if(getAvailableRooms(hour).contains(room) && roomTarget== room)
+                    careNearestRoomMap.put(tmp.getEmail(), room);
             } else if (Math.abs(room - roomTarget) == min) {
-                careNearestRoomMap.put(tmp.getEmail(), room);
+                if(getAvailableRooms(hour).contains(room) && roomTarget== room)
+                    careNearestRoomMap.put(tmp.getEmail(), room);
             }
         }
 
@@ -216,7 +219,7 @@ private Calendar date;
         return slots;
     }
 
-    private Integer[] getAvailableRooms(int slot){
+    private ArrayList<Integer> getAvailableRooms(int slot){
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
         String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = date.get(Calendar.YEAR);
@@ -235,9 +238,9 @@ private Calendar date;
         }
 
         rooms.removeAll(roomsUsed);
-        Integer[] roomsArray=rooms.toArray(new Integer[rooms.size()]);
+        //Integer[] roomsArray=rooms.toArray(new Integer[rooms.size()]);
 
-        return roomsArray;
+        return rooms;
     }
 
     private int findClosest(Integer arr[], int target)
