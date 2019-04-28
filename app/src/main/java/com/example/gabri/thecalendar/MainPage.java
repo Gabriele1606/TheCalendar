@@ -1,8 +1,13 @@
 package com.example.gabri.thecalendar;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,6 +18,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.gabri.thecalendar.API.API;
@@ -25,6 +33,7 @@ import com.example.gabri.thecalendar.Model.CaregiverDB_Table;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.CaregiverDB;
 import com.example.gabri.thecalendar.Model.Database.AppDatabase;
+import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -38,6 +47,7 @@ import java.util.TimeZone;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarView;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
+import jp.wasabeef.blurry.Blurry;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -53,20 +63,26 @@ import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 public class MainPage extends AppCompatActivity {
 
 
-    final Context mContex=this;
-    SlotAdapter slotAdapter;
-    Calendar date;
+    private final Context mContex=this;
+    private SlotAdapter slotAdapter;
+    private Calendar date;
+    private RelativeLayout layoutcontent;
+    private ImageView bluerImage;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
+        layoutcontent=findViewById(R.id.layoutcontent);
+        bluerImage=findViewById(R.id.bluer_image);
         Data.getData().setMainPageActivity(this);
         fullScreenFunction();
         instantiateDatabase();
         setCalendar();
         getCaregivers();
+
 
     }
 
@@ -147,6 +163,7 @@ public class MainPage extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     public void generateHourList(Calendar date){
@@ -299,25 +316,29 @@ public class MainPage extends AppCompatActivity {
     }
 
     private void notifyAutofillButton(){
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         Toast.makeText(getContext(),"AutoFill function is now available!", Toast.LENGTH_LONG).show();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final AutoFill autoFill= new AutoFill(date,slotAdapter);
+                autoFill.start();
+                Blurry.with(MainPage.this).capture((FrameLayout)findViewById(R.id.mainLayout)).into(bluerImage);
+                layoutcontent.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.INVISIBLE);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
                 builder.setCancelable(false);
                 builder.setTitle("Auto-Fill");
-                builder.setMessage("Are you sure to fill empty slots?");
+                builder.setMessage("Are you sure to fill empty slots?\nIt will follows the required criteria of Caregiver choice.");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        AutoFill autofill= new AutoFill(date);
                         dialogInterface.dismiss();
-                        autofill.start();
+                        fab.setVisibility(View.VISIBLE);
+                        layoutcontent.setVisibility(View.GONE);
                         slotAdapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(),"Autofill completed!", Toast.LENGTH_LONG).show();
-
 
                     }
                 });
@@ -325,6 +346,10 @@ public class MainPage extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                        fab.setVisibility(View.VISIBLE);
+                        layoutcontent.setVisibility(View.GONE);
+                        autoFill.interrupt();
+
                     }
                 });
 

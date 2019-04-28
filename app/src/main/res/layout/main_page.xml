@@ -50,6 +50,25 @@
         app:backgroundTint="@color/red"
         app:srcCompat="@drawable/robot" />
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"
+        android:id="@+id/layoutcontent">
+
+        <ImageView
+            android:id="@+id/bluer_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            />
+
+    </RelativeLayout>
+
     </FrameLayout>
 
 

@@ -1,6 +1,7 @@
 package com.example.gabri.thecalendar.Model;
 
 import android.content.Context;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Handler;
 
 import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
@@ -23,20 +25,31 @@ import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
  * Created by Gabri on 26/04/19.
  */
 
-public class AutoFill {
+public class AutoFill extends Thread{
 
 List<Reservation> reservationsOfTheDay;
 HashMap<String, Integer> caresWorkLess;
 
 private Calendar date;
+private SlotAdapter slotAdapter;
+private ArrayList<Reservation> reservationDone;
+private ArrayList<Caregiver> allCaregivers;
+private ArrayList<Integer> emptySlots;
+private HashMap<String, Integer> caregiverHoursAvailable;
 
-
-    public AutoFill(Calendar date){
+    public AutoFill(Calendar date, SlotAdapter slotAdapter){
         this.date=date;
+        this.slotAdapter=slotAdapter;
+        this.reservationDone= new ArrayList<>();
+        this.allCaregivers=getAllCaregivers();
+        this.emptySlots= getEmptySlots(date);
+        caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
+
     }
 
 
-    public void start(){
+    public void run(){
+        System.out.println("Parto adesso");
         ArrayList<Integer> roomsAvilable;
         HashMap<String, Integer> caregiverHoursAvailableForRooms;
         HashMap<String, Integer> caregiverHoursAvailableTmp;
@@ -44,17 +57,11 @@ private Calendar date;
         HashMap<String, Integer> caregiverWorkLess ;
 
 
-        ArrayList<Caregiver> allCaregivers=getAllCaregivers();
-
-        ArrayList<Integer> emptySlots= getEmptySlots(date);
-
-
-        HashMap<String, Integer> caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
-
-        for(int i=0;i<emptySlots.size();i++) {
+        for(int i=0;i<emptySlots.size() && !isInterrupted();i++) {
+            System.out.println("Primo for");
             roomsAvilable = getAvailableRooms(emptySlots.get(i));
             caregiverHoursAvailableForRooms = new HashMap<>(caregiverHoursAvailable);
-            for (int j = 0; j < roomsAvilable.size(); j++) {
+            for (int j = 0; j < roomsAvilable.size() && !isInterrupted(); j++) {
                 caregiverHoursAvailableTmp = new HashMap<>(caregiverHoursAvailableForRooms);
                 careNearestRoomMap = getCaregiversWorkInDayNearestRoom(emptySlots.get(i), roomsAvilable.get(j));
                 caregiverWorkLess = getCaregiversWorkLessPreviousWeeks();
@@ -99,7 +106,33 @@ private Calendar date;
                     caregiverHoursAvailable.remove(careKey);
             }
         }
+
         }
+        if(isInterrupted()){
+            cancelReservationsDone();
+        }else {
+            notifyAdapterChanged();
+            //notifyAutofillCompleted();
+        }
+
+    }
+
+    private void notifyAdapterChanged(){
+        new android.os.Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                slotAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void notifyAutofillCompleted(){
+        new android.os.Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(),"Autofill completed!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private ArrayList<Caregiver> getAllCaregivers(){
@@ -292,65 +325,6 @@ private Calendar date;
 
     }
 
-    private int findClosest(Integer arr[], int target)
-    {
-        int n = arr.length;
-
-        // Corner cases
-        if (target <= arr[0])
-            return arr[0];
-        if (target >= arr[n - 1])
-            return arr[n - 1];
-
-        // Doing binary search
-        int i = 0, j = n, mid = 0;
-        while (i < j) {
-            mid = (i + j) / 2;
-
-            if (arr[mid] == target)
-                return arr[mid];
-
-            /* If target is less than array element,
-               then search in left */
-            if (target < arr[mid]) {
-
-                // If target is greater than previous
-                // to mid, return closest of two
-                if (mid > 0 && target > arr[mid - 1])
-                    return getClosest(arr[mid - 1],
-                            arr[mid], target);
-
-                /* Repeat for left half */
-                j = mid;
-            }
-
-            // If target is greater than mid
-            else {
-                if (mid < n-1 && target < arr[mid + 1])
-                    return getClosest(arr[mid],
-                            arr[mid + 1], target);
-                i = mid + 1; // update i
-            }
-        }
-
-        // Only single element left after search
-        return arr[mid];
-    }
-
-    // Method to compare which one is the more close
-    // We find the closest by taking the difference
-    //  between the target and both values. It assumes
-    // that val2 is greater than val1 and target lies
-    // between these two.
-    private int getClosest(int val1, int val2,
-                           int target)
-    {
-        if (target - val1 >= val2 - target)
-            return val2;
-        else
-            return val1;
-    }
-
 
     public void addReservationToDB(ArrayList<Caregiver> caregivers, int slot, String careId, int roomNumber){
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
@@ -375,8 +349,17 @@ private Calendar date;
         reservation.setPatientName("Patient");
         reservation.setRoomNumber(roomNumber);
         reservation.save();
+        reservationDone.add(reservation);
+
 
     }
 
+    public void cancelReservationsDone(){
+
+        for(int i=0; i<reservationDone.size();i++){
+            SQLite.delete(Reservation.class).where(Reservation_Table.id.eq(reservationDone.get(i).getId())).query();
+        }
+
+    }
 
 }

@@ -89,16 +89,11 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
 
     @Override
     public void onBindViewHolder(PlaceholderHolder holder, int position) {
-
-        System.out.println("Position---> " +position);
-
         setTapPlaceholder(holder, position);
         String shortName;
         String careFirstName=caregivers.get(position).getName().getFirst();
         String careLastName=caregivers.get(position).getName().getLast();
         int room= map.get(caregivers.get(position));
-
-
 
         shortName=careFirstName+" "+careLastName.charAt(0)+".";
 
