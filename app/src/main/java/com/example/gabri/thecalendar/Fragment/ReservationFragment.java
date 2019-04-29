@@ -1,12 +1,9 @@
-package com.example.gabri.thecalendar;
+package com.example.gabri.thecalendar.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,25 +11,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.AppParameter;
+import com.example.gabri.thecalendar.MainPage;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
-import com.example.gabri.thecalendar.Model.Reservation_Table;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.example.gabri.thecalendar.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -318,7 +313,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
          Calendar date=(Calendar) bundle.getSerializable("DATE");
          int hour=(int)bundle.getInt("HOUR");
          DBmanager dBmanager= new DBmanager();
-         for(int i=0;i< AppParameter.roomNumber;i++){
+         for(int i = 0; i< AppParameter.roomNumber; i++){
              this.roomsAvailable.add(i);
          }
 

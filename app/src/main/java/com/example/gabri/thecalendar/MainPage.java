@@ -21,9 +21,8 @@ import android.widget.Toast;
 
 import com.example.gabri.thecalendar.API.API;
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
-import com.example.gabri.thecalendar.Model.APIResponse;
-import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Controller.AutoFill;
+import com.example.gabri.thecalendar.Model.APIResponse;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.CaregiverDB;

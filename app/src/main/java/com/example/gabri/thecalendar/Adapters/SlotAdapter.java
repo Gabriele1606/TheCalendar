@@ -11,16 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
-import com.example.gabri.thecalendar.Model.Reservation_Table;
 import com.example.gabri.thecalendar.R;
-import com.example.gabri.thecalendar.ReservationFragment;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.example.gabri.thecalendar.Fragment.ReservationFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;

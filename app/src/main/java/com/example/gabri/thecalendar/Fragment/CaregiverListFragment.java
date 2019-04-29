@@ -1,7 +1,6 @@
-package com.example.gabri.thecalendar;
+package com.example.gabri.thecalendar.Fragment;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +17,13 @@ import android.widget.Toast;
 import com.example.gabri.thecalendar.API.API;
 import com.example.gabri.thecalendar.Adapters.CaregiverAdapter;
 
-import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 
 import com.example.gabri.thecalendar.Model.APIResponse;
-import com.example.gabri.thecalendar.Model.Login;
+import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Reservation;
-import com.example.gabri.thecalendar.Model.Reservation_Table;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.example.gabri.thecalendar.R;
 
 
 import java.io.IOException;
@@ -34,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 
 import okhttp3.Cache;
@@ -49,6 +45,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Gabri on 18/04/19.
+ *
+ *
+ * CaregiverListFragment is a class which handle the procedure to require caregiver using API and visualize them
+ * in caregiver_list_fragment.xml
  */
 
 public class CaregiverListFragment extends android.support.v4.app.Fragment{
@@ -76,6 +76,9 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
     }
 
+    /**
+     * This method add the functionality to swipe to refresh the caregivers list
+     */
     public void setSwipeAction(){
         swipeRefreshLayout=view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -87,6 +90,10 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
         });
     }
 
+    /**
+     * This method check if the device is connected to internet.
+     * @return true if the device is connected, false otherwise.
+     */
     public boolean isNetworkAvailable(){
         ConnectivityManager connectivityManager= (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -193,13 +200,8 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
     public void filterAvailableCaregiversInSlot(List<Caregiver> allCaregivers){
         Calendar date= (Calendar)bundle.getSerializable("DATE");
         int hour= (int)bundle.getInt("HOUR");
-        int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
-        String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
-        int year=date.get(Calendar.YEAR);
-
-        String dateInString=dayOfMonth+"_"+month+"_"+year;
-
-        List<Reservation> reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
+        DBmanager dbManager=new DBmanager();
+        List<Reservation> reservations= dbManager.getReservationInASlot(date, hour);
         List<Caregiver> alreadyBusyCaregivers= new ArrayList<>();
         for(int i=0;i<reservations.size();i++){
             alreadyBusyCaregivers.add(reservations.get(i).getCaregiver());
@@ -209,19 +211,17 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
 
     }
 
+    /**
+     * Return all the caregivers that still have working hours.
+     * @param allCaregivers
+     * @return HashMap which contains CaregiverKey and the hours available.
+     */
     public HashMap<String, Integer> getAvailableCaregiversInWeek(List<Caregiver> allCaregivers){
         Calendar date= (Calendar)bundle.getSerializable("DATE");
         int hour= (int)bundle.getInt("HOUR");
-        int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
-        String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
-        int year=date.get(Calendar.YEAR);
-
-        String dateInString=dayOfMonth+"_"+month+"_"+year;
-
+        DBmanager dbManager=new DBmanager();
         //Return all the reservations done in a specific weekOfYear, where the weekOfYear is obtained when user click on slotHour.
-        List<Reservation> reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.weekOfYear.eq(date.get(Calendar.WEEK_OF_YEAR))).queryList();
-
-
+        List<Reservation> reservations= dbManager.getReservationInAWeekOfYear(date);
         HashMap<String, Integer> careHourWeekMap = new HashMap<String, Integer>();
         Caregiver tmp;
         for (int i=0; i<reservations.size();i++){
@@ -233,8 +233,7 @@ public class CaregiverListFragment extends android.support.v4.app.Fragment{
             }
         }
 
-        //From the MAP and from the List of Caregivers to visualize I remove the caregiver that for a specified week has reached 5+1 hours per Week.
-
+        //From the MAP and from the List of Caregivers to visualize I remove caregivers that for a specified week has reached 5+1 hours per Week.
         int count=careHourWeekMap.size();
         for(int i=0; i< allCaregivers.size() && count>0;i++){
             String careKey=allCaregivers.get(i).getEmail();

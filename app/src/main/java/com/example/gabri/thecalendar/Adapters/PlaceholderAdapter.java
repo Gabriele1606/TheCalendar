@@ -11,25 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.example.gabri.thecalendar.DetailsReservationFragment;
-import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.Fragment.DetailsReservationFragment;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Colors;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.R;
-import com.example.gabri.thecalendar.ReservationFragment;
-import com.raizlabs.android.dbflow.sql.language.Operator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;

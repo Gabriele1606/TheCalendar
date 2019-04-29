@@ -42,6 +42,13 @@ public class DBmanager {
         return reservations;
     }
 
+    public List<Reservation> getReservationInAWeekOfYear(Calendar date){
+        List<Reservation> reservations;
+        reservations= SQLite.select().from(Reservation.class).where(Reservation_Table.weekOfYear.eq(date.get(Calendar.WEEK_OF_YEAR))).queryList();
+        return reservations;
+
+    }
+
     public List<Reservation> getReservationOfCaregiverInDate(Calendar date, int slot, Caregiver caregiver){
         List<Reservation> reservations;
         int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);

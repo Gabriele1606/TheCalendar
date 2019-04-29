@@ -1,4 +1,4 @@
-package com.example.gabri.thecalendar.Model;
+package com.example.gabri.thecalendar;
 
 /**
  * Created by Gabri on 20/04/19.

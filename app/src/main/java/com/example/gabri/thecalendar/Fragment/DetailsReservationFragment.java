@@ -1,4 +1,4 @@
-package com.example.gabri.thecalendar;
+package com.example.gabri.thecalendar.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,15 +18,14 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.AppParameter;
+import com.example.gabri.thecalendar.MainPage;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
-import com.example.gabri.thecalendar.Model.Reservation_Table;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.example.gabri.thecalendar.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

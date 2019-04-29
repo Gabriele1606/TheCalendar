@@ -2,6 +2,7 @@ package com.example.gabri.thecalendar.Model;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.example.gabri.thecalendar.AppParameter;
 import com.example.gabri.thecalendar.Controller.AutoFill;
 import com.example.gabri.thecalendar.MainPage;
 import com.raizlabs.android.dbflow.config.FlowManager;

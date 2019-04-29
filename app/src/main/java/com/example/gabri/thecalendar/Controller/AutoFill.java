@@ -1,31 +1,22 @@
 package com.example.gabri.thecalendar.Controller;
 
-import android.content.Context;
 import android.os.Looper;
-import android.widget.Toast;
 
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
-import com.example.gabri.thecalendar.Model.AppParameter;
+import com.example.gabri.thecalendar.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.CaregiverDB;
 import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Reservation;
 import com.example.gabri.thecalendar.Model.Reservation_Table;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Operator;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Handler;
-
-import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * Created by Gabri on 26/04/19.
@@ -60,8 +51,6 @@ HashMap<String, Integer> caresWorkLess;
 
     /**
      * HashMap of caregivers that have hour avaible in the considered date
-     * caregiver  hoursAvailable
-     * ----------|--------------
      *
      */
     private HashMap<String, Integer> caregiverHoursAvailable;
@@ -152,7 +141,7 @@ HashMap<String, Integer> caresWorkLess;
                 } else if (caregiverHoursAvailableTmp.keySet().size() == 1) {
                     addReservationToDB(allCaregivers, emptySlots.get(i), careKey, roomsAvilable.get(j));
                 } else {
-                    //Don't fill the slot
+                    //Leave the slot empty
                 }
                 caregiverHoursAvailableForRooms.remove(careKey);
 
