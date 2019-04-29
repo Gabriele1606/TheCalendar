@@ -1,32 +1,25 @@
 package com.example.gabri.thecalendar.Model;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.example.gabri.thecalendar.Adapters.SlotAdapter;
+import com.example.gabri.thecalendar.Controller.AutoFill;
 import com.example.gabri.thecalendar.MainPage;
-import com.example.gabri.thecalendar.R;
-import com.example.gabri.thecalendar.SplashActivity;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import androidx.annotation.IntegerRes;
 
 import static org.junit.Assert.*;
 

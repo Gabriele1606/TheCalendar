@@ -23,14 +23,12 @@ import com.example.gabri.thecalendar.API.API;
 import com.example.gabri.thecalendar.Adapters.SlotAdapter;
 import com.example.gabri.thecalendar.Model.APIResponse;
 import com.example.gabri.thecalendar.Model.AppParameter;
-import com.example.gabri.thecalendar.Model.AutoFill;
+import com.example.gabri.thecalendar.Controller.AutoFill;
 import com.example.gabri.thecalendar.Model.Caregiver;
-import com.example.gabri.thecalendar.Model.CaregiverDB_Table;
 import com.example.gabri.thecalendar.Model.Data;
 import com.example.gabri.thecalendar.Model.CaregiverDB;
 import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.io.IOException;
 import java.util.ArrayList;

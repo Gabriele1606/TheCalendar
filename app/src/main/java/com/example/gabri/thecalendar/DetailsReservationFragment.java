@@ -84,12 +84,6 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
         setTapDeleteButton();
         setTapModifyButton();
 
-        //findRoomsAvailable();
-
-        //caregiverCardCliccable();
-        //setTapOnRoomSelection();
-        //setTapReservationButton();
-
         return view;
     }
 
@@ -288,7 +282,7 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
         setTapOnRoomSelection();
         caregiverCardCliccable();
         setTapReservationButton();
-        
+
     }
 
     /**
