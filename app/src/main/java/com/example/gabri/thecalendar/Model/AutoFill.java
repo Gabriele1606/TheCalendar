@@ -49,7 +49,6 @@ private HashMap<String, Integer> caregiverHoursAvailable;
 
 
     public void run(){
-        System.out.println("Parto adesso");
         ArrayList<Integer> roomsAvilable;
         HashMap<String, Integer> caregiverHoursAvailableForRooms;
         HashMap<String, Integer> caregiverHoursAvailableTmp;
@@ -58,7 +57,6 @@ private HashMap<String, Integer> caregiverHoursAvailable;
 
 
         for(int i=0;i<emptySlots.size() && !isInterrupted();i++) {
-            System.out.println("Primo for");
             roomsAvilable = getAvailableRooms(emptySlots.get(i));
             caregiverHoursAvailableForRooms = new HashMap<>(caregiverHoursAvailable);
             for (int j = 0; j < roomsAvilable.size() && !isInterrupted(); j++) {
