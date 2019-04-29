@@ -1,9 +1,5 @@
 package com.example.gabri.thecalendar.Adapters;
-
 import android.content.Context;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
@@ -15,16 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.example.gabri.thecalendar.API.API;
-import com.example.gabri.thecalendar.Model.APIResponse;
 import com.example.gabri.thecalendar.Model.AppParameter;
-import com.example.gabri.thecalendar.Model.AutoFill;
 import com.example.gabri.thecalendar.Model.Caregiver;
-import com.example.gabri.thecalendar.Model.Caregiver_Table;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
 import com.example.gabri.thecalendar.Model.Reservation_Table;
@@ -32,37 +22,29 @@ import com.example.gabri.thecalendar.R;
 import com.example.gabri.thecalendar.ReservationFragment;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+
 import java.util.TimeZone;
 
-import okhttp3.Cache;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 /**
  * Created by Gabri on 17/04/19.
+ *
+ * SlotAdapter Class handle the hour slots RecyclerView
+ *
  */
 
 public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
-
-
-    private List<String> hours = new ArrayList<String>();
+    /**
+     * Contex of the MainActivity
+     */
     private Context mContext;
+    private List<String> hours = new ArrayList<String>();
     private Calendar date;
 
     public class SlotHolder extends RecyclerView.ViewHolder{
@@ -74,7 +56,10 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         private RecyclerView placeholderRecyclerView;
         private CardView cardView;
 
-
+        /**
+         * Constructor
+         * @param itemView
+         */
         public SlotHolder(View itemView) {
             super(itemView);
             linearLayout= itemView.findViewById(R.id.slotLinearLayout);
@@ -86,6 +71,12 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         }
     }
 
+    /**
+     * Slot Adapter constructor.
+     * @param context
+     * @param hours
+     * @param date
+     */
     public SlotAdapter(Context context, List<String> hours, Calendar date){
         this.mContext=context;
         this.hours=hours;
@@ -107,16 +98,9 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
         GlideApp.with(mContext).load(R.drawable.red_plus_icon).into(holder.addButton);
         setTapSlot(holder,this.date, position);
 
+        DBmanager dbManager= new DBmanager();
 
-        int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
-        String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
-        int year=date.get(Calendar.YEAR);
-
-        String dateInString=dayOfMonth+"_"+month+"_"+year;
-
-
-        List<Reservation> reservations=SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(position)).queryList();
-
+        List<Reservation> reservations=dbManager.getReservationInASlot(this.date,position);
         List<Caregiver> caregivers = new ArrayList<Caregiver>();
 
         //HashMap with Caregiver and Room of the Caregiver
@@ -134,13 +118,23 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
 
     }
 
+    /**
+     * Return the items inside the RecyclerView
+     * @return
+     */
 
     @Override
     public int getItemCount() {
         return hours.size();
     }
 
-    //Remeber that Position=Hour
+    /**
+     * This method se the possibility to set the Tap on a specific slot.
+     * The slot can be tap if the hour in not expired, the date is not expired and also if the slot is not full (All room full).
+     * @param holder
+     * @param date
+     * @param position
+     */
     private void setTapSlot(SlotHolder holder, Calendar date, int position) {
         final Calendar fDate=date;
         final int hour=position;
@@ -155,14 +149,7 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("DATE", fDate);
                     bundle.putInt("HOUR", hour);
-
-                    ReservationFragment reservationFragment = new ReservationFragment();
-                    reservationFragment.setArguments(bundle);
-                    FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, reservationFragment, "Reservation");
-                    transaction.addToBackStack("Slot");
-                    transaction.commit();
-
-
+                    startReservationFragment(bundle);
                 }
             });
         }else{
@@ -174,7 +161,19 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
     }
 
     /**
-     * Method used to verify if the slot can be Cliccable or not (could be full)
+     * This method prepare and execute the reservation fragment.
+     * @param bundle
+     */
+    public void startReservationFragment(Bundle bundle){
+        ReservationFragment reservationFragment = new ReservationFragment();
+        reservationFragment.setArguments(bundle);
+        FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, reservationFragment, "Reservation");
+        transaction.addToBackStack("Slot");
+        transaction.commit();
+    }
+
+    /**
+     * Method used to verify if the slot can be Clickable or not (could be full)
      * @param fDate
      * @param hour
      */
@@ -187,20 +186,26 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
             return false;
     }
 
-
+    /**
+     * This method check if the slot is full or not (all rooms full or not).
+     * @param fDate
+     * @param hour
+     * @return return true if the slot is full, false otherwise.
+     */
     private boolean reservationSlotComplete(Calendar fDate, int hour){
-        int dayOfMonth = fDate.get(Calendar.DAY_OF_MONTH);
-        String month = fDate.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
-        int year = fDate.get(Calendar.YEAR);
-        String dateInString = dayOfMonth + "_" + month + "_" + year;
-        List<Reservation> reservations = SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
-
+        DBmanager dbManager= new DBmanager();
+        List<Reservation> reservations=dbManager.getReservationInASlot(fDate,hour);
         if(reservations.size()< AppParameter.roomNumber)
             return false;
         else
             return true;
     }
 
+    /**
+     * this method check if the hour respect the assignement contraints of Hours of work.
+     * @param hour
+     * @return true the slot respect the hours of work, false otherwise.
+     */
     private boolean respectHourOfWork(int hour){
         if(hour >= AppParameter.startHour && hour <= AppParameter.stopHour)
             return true;
@@ -208,6 +213,11 @@ public class SlotAdapter extends RecyclerView.Adapter<SlotAdapter.SlotHolder> {
             return false;
     }
 
+    /**
+     * this method check if the date is expired or not.
+     * @param fDate
+     * @return true if the date is expired, false otherwise.
+     */
     private boolean dateIsAfter(Calendar fDate){
         Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         if(fDate.compareTo(dateOfToday)>0)

@@ -2,6 +2,9 @@ package com.example.gabri.thecalendar.Model;
 
 /**
  * Created by Gabri on 20/04/19.
+ *
+ * This Class is dedicated to contains all the parameters useful for future development,
+ * or in the case in which the assignment constraints change during the application lifecycle.
  */
 
 public final class AppParameter {

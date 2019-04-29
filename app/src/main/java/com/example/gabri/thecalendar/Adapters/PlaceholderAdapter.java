@@ -36,19 +36,27 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Gabri on 17/04/19.
+ *
+ * PlaceholderAdapter handle the horizntal RecyclerView
+ *
  */
 
 public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter.PlaceholderHolder>{
 
+    /**
+     * Contect of the MainActivity
+     */
+    private Context mContext;
     private List<Caregiver> caregivers= new ArrayList<Caregiver>();
     private HashMap<Caregiver,Integer> map;
-    private Context mContext;
     private List<String> colorSet;
     private Calendar date;
     private int hour;
 
 
-
+    /**
+     * Placeholder class
+     */
     public class PlaceholderHolder extends RecyclerView.ViewHolder{
 
         private TextView careName;
@@ -56,7 +64,10 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
         private TextView roomNumber;
         private CardView placeholderCard;
 
-
+        /**
+         * Constructor which associate the view elements
+         * @param itemView
+         */
         public PlaceholderHolder(View itemView) {
             super(itemView);
 
@@ -69,6 +80,14 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
         }
     }
 
+    /**
+     * Constructor
+     * @param context
+     * @param caregivers
+     * @param date
+     * @param hour
+     * @param map
+     */
     public PlaceholderAdapter(Context context, List<Caregiver> caregivers, Calendar date,int hour, HashMap<Caregiver, Integer> map){
         this.mContext=context;
         this.caregivers=caregivers;
@@ -107,6 +126,10 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
 
     }
 
+    /**
+     * Return the items inside the Horizontal RecyclerView
+     * @return
+     */
     @Override
     public int getItemCount() {
         return caregivers.size();
@@ -124,17 +147,29 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
                     bundle.putSerializable("CAREGIVER", selectedCare);
                     bundle.putSerializable("DATE", selectedDate);
                     bundle.putInt("HOUR", hour);
-
-                    DetailsReservationFragment detailReservationFragment = new DetailsReservationFragment();
-                    detailReservationFragment.setArguments(bundle);
-                    FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, detailReservationFragment, "Reservation");
-                    transaction.addToBackStack("Slot");
-                    transaction.commit();
+                    startDetailsReservationFragment(bundle);
                 }
             });
         }
     }
 
+    /**
+     * This method prepare and execute the details reservation fragment.
+     * @param bundle
+     */
+    private void startDetailsReservationFragment(Bundle bundle){
+        DetailsReservationFragment detailReservationFragment = new DetailsReservationFragment();
+        detailReservationFragment.setArguments(bundle);
+        FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainLayout, detailReservationFragment, "Reservation");
+        transaction.addToBackStack("Slot");
+        transaction.commit();
+    }
+
+    /**
+     * Check id a placeholder can be modified or delete.
+     * For example and "older" placeholde cannot be modified or removed
+     * @return true if can be modified/deleted, false otherwise
+     */
     private boolean placeholderEditable(){
 
         //Compare the date of the placeholder selected with the date of today. If the date of the Placeholder is older than today make it not cliccable.
@@ -144,6 +179,11 @@ public class PlaceholderAdapter extends  RecyclerView.Adapter<PlaceholderAdapter
             return false;
     }
 
+    /**
+     * this method check if the date is expired or not.
+     * @param fDate
+     * @return true if the date is expired, false otherwise.
+     */
     private boolean dateIsAfter(Calendar fDate){
         Calendar dateOfToday = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         if(fDate.compareTo(dateOfToday)>0)

@@ -45,6 +45,7 @@ private HashMap<String, Integer> caregiverAlreadyAssignedToRoom;
         this.allCaregivers=getAllCaregivers();
         this.emptySlots= getEmptySlots(date);
         caregiverHoursAvailable = getAvailableCaregiversInWeek(new ArrayList<Caregiver>(allCaregivers));
+        this.caregiverAlreadyAssignedToRoom= new HashMap<>();
 
     }
 

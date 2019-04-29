@@ -1,6 +1,11 @@
 package com.example.gabri.thecalendar.Model;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
+import com.example.gabri.thecalendar.Adapters.SlotAdapter;
 import com.example.gabri.thecalendar.MainPage;
+import com.example.gabri.thecalendar.R;
 import com.example.gabri.thecalendar.SplashActivity;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -30,11 +35,18 @@ import static org.junit.Assert.*;
  */
 @RunWith(RobolectricTestRunner.class)
 public class AutoFillTest {
-
+    RecyclerView recyclerView;
 
     @Before
     public void setUp() throws Exception {
         MainPage mainPageActivity = Robolectric.setupActivity(MainPage.class);
+
+        /**recyclerView = mainPageActivity.findViewById(R.id.slotHourRecycler);
+        this.slotAdapter= new SlotAdapter(mContex,hours, date);
+        recyclerView.setAdapter(slotAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContex));
+         **/
+
     }
 
     @After
@@ -146,7 +158,7 @@ public class AutoFillTest {
         String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = date.get(Calendar.YEAR);
         String dateInString = dayOfMonth + "_" + month + "_" + year;
-        AutoFill autoFill= new AutoFill(date);
+        AutoFill autoFill= new AutoFill(date, null);
 
         int slot=9;
         int roomNumber=1;
@@ -296,7 +308,7 @@ public class AutoFillTest {
         reservation.save();
 
         HashMap<String, Integer> careNearestRoomMap;
-        AutoFill autoFill= new AutoFill(date);
+        AutoFill autoFill= new AutoFill(date, null);
 
         int roomTarget=1;
         String careKeyExpected= careRoomTwo.getEmail();
@@ -367,7 +379,7 @@ public class AutoFillTest {
         CareWorkLess.setPicture(picture_2);
 
         Calendar date = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
-        AutoFill autofill= new AutoFill(date);
+        AutoFill autofill= new AutoFill(date, null);
         Calendar previousDate = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         previousDate.add(Calendar.DATE,-20);
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
@@ -420,7 +432,7 @@ public class AutoFillTest {
 
         Calendar date = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         date.add(Calendar.DATE,1);
-        AutoFill autofill= new AutoFill(date);
+        AutoFill autofill= new AutoFill(date, null);
         int dayOfMonth = date.get(Calendar.DAY_OF_MONTH);
         String month = date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
         int year = date.get(Calendar.YEAR);
@@ -446,7 +458,7 @@ public class AutoFillTest {
         int timeSlot=1;
         Calendar date = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         date.add(Calendar.DATE,1);
-        AutoFill autoFill= new AutoFill(date);
+        AutoFill autoFill= new AutoFill(date, null);
         int availableNumberActual=autoFill.getAvailableRooms(timeSlot).size();
         assertEquals(availableRoomsExpected,availableNumberActual);
 
@@ -493,7 +505,7 @@ public class AutoFillTest {
         int roomToReserve= 1;
         Calendar date = Calendar.getInstance(TimeZone.getTimeZone("CEST"));
         date.add(Calendar.DATE,1);
-        AutoFill autoFill= new AutoFill(date);
+        AutoFill autoFill= new AutoFill(date, null);
 
         autoFill.addReservationToDB(caregivers,slotToReserve,caregiverExpected.getEmail(),roomToReserve);
 

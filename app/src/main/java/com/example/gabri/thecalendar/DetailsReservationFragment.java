@@ -369,8 +369,10 @@ public class DetailsReservationFragment extends android.support.v4.app.Fragment{
     }
 
     public void refreshCalendar(Calendar date){
-        ((MainPage)getActivity()).generateHourList(date);
+        List<String> hours= ((MainPage)getActivity()).generateHourList();
+        ((MainPage)getActivity()).createSlotAdapterRecycler(hours,date);
     }
+
 
     public void findRoomsAvailable(){
         Calendar date=(Calendar) bundle.getSerializable("DATE");

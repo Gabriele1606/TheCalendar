@@ -31,9 +31,11 @@ import static android.app.Activity.RESULT_OK;
 
 public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.CaregiverHolder>{
 
-
-    private List<Caregiver> caregivers= new ArrayList<Caregiver>();
+    /**
+     * Contex of the MainActivity
+     */
     private Context mContext;
+    private List<Caregiver> caregivers= new ArrayList<Caregiver>();
     private HashMap<String, Integer> careHourWeekMap;
 
     public class CaregiverHolder extends RecyclerView.ViewHolder{
@@ -46,6 +48,10 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
         private TextView hourWeek;
         private TextView extraHourWeek;
 
+        /**
+         * Constructor
+         * @param itemView
+         */
         public CaregiverHolder(View itemView) {
             super(itemView);
 
@@ -60,6 +66,12 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
         }
     }
 
+    /**
+     * Constructor
+     * @param context
+     * @param caregivers
+     * @param careHourWeekMap
+     */
 
     public CaregiverAdapter(Context context, List<Caregiver> caregivers, HashMap<String, Integer> careHourWeekMap){
         this.caregivers=caregivers;
@@ -103,11 +115,21 @@ public class CaregiverAdapter extends  RecyclerView.Adapter<CaregiverAdapter.Car
         setTapCaregiver(holder, position);
     }
 
+    /**
+     *
+     * @return number of item inside the RecyclerView
+     */
     @Override
     public int getItemCount() {
         return caregivers.size();
     }
 
+
+    /**
+     * This method set the possibility to tap a caregiver to choice it.
+     * @param holder
+     * @param position position in the RecyclerView
+     */
 
     public void setTapCaregiver(final CaregiverHolder holder, final int position){
         holder.cardview.setOnClickListener(new View.OnClickListener() {

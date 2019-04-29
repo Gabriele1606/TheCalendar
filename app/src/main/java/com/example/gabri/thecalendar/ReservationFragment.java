@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.gabri.thecalendar.Model.AppParameter;
 import com.example.gabri.thecalendar.Model.Caregiver;
 import com.example.gabri.thecalendar.Model.Data;
+import com.example.gabri.thecalendar.Model.Database.DBmanager;
 import com.example.gabri.thecalendar.Model.Glide.GlideApp;
 import com.example.gabri.thecalendar.Model.Reservation;
 import com.example.gabri.thecalendar.Model.Reservation_Table;
@@ -39,6 +40,12 @@ import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Gabri on 17/04/19.
+ *
+ * ReservationFragment is a class which handle the procedure to reserve a caregiver in a specific
+ * Date and slot for a specific patient.
+ * It visualize all the information on reservation_fragment.xml
+ *
+ *
  */
 
 
@@ -52,6 +59,16 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
     Caregiver caregiver;
     List<Integer> roomsAvailable=new ArrayList<>();
 
+
+    /**
+     *  Method invoke when fragent is created.
+     * Basically this method set all the graphical component and retrieve the information from DB
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,7 +78,6 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         fab.setVisibility(View.GONE);
         patientName=view.findViewById(R.id.patient_name);
 
-
         //Retrieve data from Bundle
         bundle=getArguments();
         findRoomsAvailable();
@@ -69,7 +85,6 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         caregiverCardCliccable();
         setTapOnRoomSelection();
         setTapReservationButton();
-
 
         return view;
     }
@@ -89,6 +104,9 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    /**
+     * Method invoked when the fragment is destroyed.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -96,6 +114,11 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
         fab.setVisibility(View.VISIBLE);
 
     }
+
+    /**
+     * This method associate all the graphical components with the relative objects and set the text and
+     * pictures.
+     */
 
     public void fillLayoutInformation(){
         Calendar data=(Calendar) bundle.getSerializable("DATE");
@@ -139,6 +162,10 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
     }
 
+    /**
+     * This method set the caregiver card clickable in such a way to select the caregiver from
+     * the caregiver fragment list.
+     */
      public void caregiverCardCliccable(){
          final Calendar data=(Calendar) bundle.getSerializable("DATE");
          final int hour=(int)bundle.getInt("HOUR");
@@ -151,14 +178,24 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
                  bundle.putSerializable("DATE", data);
                  bundle.putInt("HOUR", hour);
 
-                 CaregiverListFragment caregiverListFragment= new CaregiverListFragment();
-                 FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.reservationLayout, caregiverListFragment, "Caregivers");
-                 caregiverListFragment.setArguments(bundle);
-                 caregiverListFragment.setTargetFragment(ReservationFragment.this, 3333);
-                 transaction.addToBackStack("Reservation");
-                 transaction.commit();
+                 startCaregiverListFragment(bundle);
              }
          });
+     }
+
+
+    /**
+     * This mehtod start the Caregiver list fragment
+     * @param bundle
+     */
+    private void startCaregiverListFragment(Bundle bundle){
+         CaregiverListFragment caregiverListFragment= new CaregiverListFragment();
+         FragmentTransaction transaction = Data.getData().getMainPageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.reservationLayout, caregiverListFragment, "Caregivers");
+         caregiverListFragment.setArguments(bundle);
+         caregiverListFragment.setTargetFragment(ReservationFragment.this, 3333);
+         transaction.addToBackStack("Reservation");
+         transaction.commit();
+
      }
 
      public void setTapOnRoomSelection(){
@@ -174,9 +211,7 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
              @Override
              public void onClick(View view) {
                  TextView roomNumber=(TextView)v.findViewById(R.id.room_number);
-
                  int number=tmp.indexOf(Integer.parseInt(roomNumber.getText().toString()));
-
                  if(number>minIndex){
                      number--;
                      roomNumber.setText(String.valueOf(tmp.get(number)));
@@ -204,7 +239,11 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
          });
      }
 
-     public void setTapReservationButton(){
+
+    /**
+     * This method set the OnClickListener on the RESERVE BUTTON
+     */
+    public void setTapReservationButton(){
          Button reserveButton=view.findViewById(R.id.reserve_button);
          final Caregiver care =this.caregiver;
          final Calendar date=(Calendar) bundle.getSerializable("DATE");
@@ -233,7 +272,11 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
      }
 
 
-     public void addReservationToDB(){
+    /**
+     * If there are not empty fields, this method put the reservation into database.
+     */
+
+    public void addReservationToDB(){
          Calendar date= (Calendar)bundle.getSerializable("DATE");
          int slot= (int)bundle.getInt("HOUR");
          String careId=this.caregiver.getEmail();
@@ -257,23 +300,29 @@ public class ReservationFragment extends android.support.v4.app.Fragment{
 
      }
 
-     public void refreshCalendar(Calendar date){
-         ((MainPage)getActivity()).generateHourList(date);
+    /**
+     * After the reservation is completed, this method refresh the calendar view.
+     * @param date
+     */
+
+    public void refreshCalendar(Calendar date){
+        List<String> hours= ((MainPage)getActivity()).generateHourList();
+         ((MainPage)getActivity()).createSlotAdapterRecycler(hours,date);
      }
 
-     public void findRoomsAvailable(){
+
+    /**
+     * This method find all the rooms available in a specific slot of specified date.
+     */
+    public void findRoomsAvailable(){
          Calendar date=(Calendar) bundle.getSerializable("DATE");
          int hour=(int)bundle.getInt("HOUR");
-         int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
-         String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
-         int year=date.get(Calendar.YEAR);
-
-         String dateInString=dayOfMonth+"_"+month+"_"+year;
+         DBmanager dBmanager= new DBmanager();
          for(int i=0;i< AppParameter.roomNumber;i++){
              this.roomsAvailable.add(i);
          }
 
-         List<Reservation> reservations=SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.slot.eq(hour)).queryList();
+         List<Reservation> reservations=dBmanager.getReservationInASlot(date,hour);
 
          List<Integer> roomAlreadyUsed= new ArrayList<>();
 
