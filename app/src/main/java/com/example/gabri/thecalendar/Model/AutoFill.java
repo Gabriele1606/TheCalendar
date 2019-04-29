@@ -359,6 +359,7 @@ private HashMap<String, Integer> caregiverHoursAvailable;
         for(int i=0; i<reservationDone.size();i++){
             SQLite.delete(Reservation.class).where(Reservation_Table.id.eq(reservationDone.get(i).getId())).query();
         }
+        notifyAdapterChanged();
 
     }
 

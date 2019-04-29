@@ -348,7 +348,14 @@ public class MainPage extends AppCompatActivity {
                         dialogInterface.dismiss();
                         fab.setVisibility(View.VISIBLE);
                         layoutcontent.setVisibility(View.GONE);
-                        autoFill.interrupt();
+                        if(autoFill.isAlive()) {
+                            autoFill.interrupt();
+                        }
+                        else {
+                            autoFill.cancelReservationsDone();
+                            slotAdapter.notifyDataSetChanged();
+                        }
+
 
                     }
                 });
