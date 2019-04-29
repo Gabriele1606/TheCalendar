@@ -36,6 +36,7 @@ private ArrayList<Reservation> reservationDone;
 private ArrayList<Caregiver> allCaregivers;
 private ArrayList<Integer> emptySlots;
 private HashMap<String, Integer> caregiverHoursAvailable;
+private HashMap<String, Integer> caregiverAlreadyAssignedToRoom;
 
     public AutoFill(Calendar date, SlotAdapter slotAdapter){
         this.date=date;
@@ -59,6 +60,7 @@ private HashMap<String, Integer> caregiverHoursAvailable;
         for(int i=0;i<emptySlots.size() && !isInterrupted();i++) {
             roomsAvilable = getAvailableRooms(emptySlots.get(i));
             caregiverHoursAvailableForRooms = new HashMap<>(caregiverHoursAvailable);
+            this.caregiverAlreadyAssignedToRoom= new HashMap<>();
             for (int j = 0; j < roomsAvilable.size() && !isInterrupted(); j++) {
                 caregiverHoursAvailableTmp = new HashMap<>(caregiverHoursAvailableForRooms);
                 careNearestRoomMap = getCaregiversWorkInDayNearestRoom(emptySlots.get(i), roomsAvilable.get(j));
@@ -195,12 +197,14 @@ private HashMap<String, Integer> caregiverHoursAvailable;
         for (int i = 0; i < reservationsOfTheDay.size(); i++) {
             tmp = reservationsOfTheDay.get(i).getCaregiver();
             room = reservationsOfTheDay.get(i).getRoomNumber();
-            if (Math.abs(room - roomTarget) < min) {
+            if (Math.abs(room - roomTarget) < min && !caregiverAlreadyAssignedToRoom.containsKey(tmp.getEmail())) {
                 min = Math.abs(room - roomTarget);
                 careNearestRoomMap.clear();
                 careNearestRoomMap.put(tmp.getEmail(), room);
-            } else if (Math.abs(room - roomTarget) == min) {
+                caregiverAlreadyAssignedToRoom.put(tmp.getEmail(), room);
+            } else if (Math.abs(room - roomTarget) == min && !caregiverAlreadyAssignedToRoom.containsKey(tmp.getEmail())) {
                 careNearestRoomMap.put(tmp.getEmail(), room);
+                caregiverAlreadyAssignedToRoom.put(tmp.getEmail(), room);
             }
         }
 
