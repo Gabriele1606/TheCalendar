@@ -39,6 +39,22 @@ public class DBmanager {
         return reservations;
     }
 
+    public List<Reservation> getReservationOfCaregiverInDate(Calendar date, int slot, Caregiver caregiver){
+        List<Reservation> reservations;
+        int dayOfMonth= date.get(Calendar.DAY_OF_MONTH);
+        String month=date.getDisplayName(Calendar.MONTH,Calendar.LONG, Locale.ENGLISH);
+        int year=date.get(Calendar.YEAR);
+
+        String dateInString=dayOfMonth+"_"+month+"_"+year;
+        reservations = SQLite.select().from(Reservation.class).where(Reservation_Table.date.eq(dateInString), Reservation_Table.caregiver_email.eq(caregiver.getEmail()), Reservation_Table.slot.eq(slot)).queryList();
+
+        return reservations;
+    }
+
+    public void removeReservationFromDb(Reservation reservation){
+        SQLite.delete(Reservation.class).where(Reservation_Table.id.eq(reservation.getId())).query();
+    }
+
     public void addCaregiverToDB(Caregiver caregiver){
 
     }
